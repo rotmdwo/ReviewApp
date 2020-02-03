@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.comment.Comment;
@@ -43,6 +44,14 @@ public class HomeFragment extends Fragment {
         reviewAdapter.addReview(new Review(comments1, "bestowing", "청수", "레벨 10", "중국성", "2년전", "여기 진짜 맛있다.", 3));
 
         recyclerView.setAdapter(reviewAdapter);
+
+        ImageButton imageButton = rootView.findViewById(R.id.imageButton);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().add(R.id.frameLayout,new StatusFragment()).commit();
+            }
+        });
 
         return rootView;
     }

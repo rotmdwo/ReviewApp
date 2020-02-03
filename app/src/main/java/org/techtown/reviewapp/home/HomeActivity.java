@@ -2,8 +2,10 @@ package org.techtown.reviewapp.home;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +18,15 @@ public class HomeActivity extends AppCompatActivity {
     ImageButton home, restaurant, rank, settings;
     HomeFragment frg_home;
     UserRankFragment frg_rank;
+    FragmentManager manager;
+    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        manager= getSupportFragmentManager();
+        mContext = this;
 
         home = findViewById(R.id.home);
         restaurant = findViewById(R.id.restaurant);
@@ -28,12 +35,13 @@ public class HomeActivity extends AppCompatActivity {
 
         frg_home = new HomeFragment();
         frg_rank = new UserRankFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.frameLayout,frg_home).commit();
+        manager.beginTransaction().add(R.id.frameLayout,frg_home).commit();
+
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                manager.beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             }
         });
 
@@ -47,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                manager.beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             }
         });
 
