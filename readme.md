@@ -28,4 +28,6 @@
 각 카테고리 밑에는 음식점들이 들어갈 것입니다. 그리고 음식점 밑에 리뷰 노드들이 들어갈 것입니다. <br>
 3. Status 노드 아래에는 실시간으로 올라오는 리뷰와 사람들의 글을 담을 것입니다. <br>
 리뷰를 작성할 때 Status에도 반영하기 위해 음식점 리뷰를 작성하면 Review 노드를 업데이트 할 뿐만 아니라 <br>
-Status 노드 또한 업데이트 하여야 합니다. (총 2번) <
+Status 노드 또한 업데이트 하여야 합니다. (총 2번) <br>
+
+<h4> https://console.firebase.google.com/project/reviewapp-80a16/database/reviewapp-80a16/data </h4> <br>
