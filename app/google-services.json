@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "398644862641",
+    "firebase_url": "https://reviewapp-80a16.firebaseio.com",
+    "project_id": "reviewapp-80a16",
+    "storage_bucket": "reviewapp-80a16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398644862641:android:a6fe913f319a4a0fd34c90",
+        "android_client_info": {
+          "package_name": "org.techtown.reviewapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398644862641-osar3nqfsb2fimv9mgcqfr3vvjkueili.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxZukhrcSD5SgHuVaywA1R6fQUgli4UrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398644862641-osar3nqfsb2fimv9mgcqfr3vvjkueili.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
