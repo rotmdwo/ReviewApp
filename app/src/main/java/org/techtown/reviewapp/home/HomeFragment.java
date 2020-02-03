@@ -14,14 +14,18 @@ import org.techtown.reviewapp.R;
 
 public class HomeFragment extends Fragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
 
-
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
 }

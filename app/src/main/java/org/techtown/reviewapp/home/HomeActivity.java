@@ -2,6 +2,7 @@ package org.techtown.reviewapp.home;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,19 +20,20 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Log.d("asdf","a");
+
         home = findViewById(R.id.home);
         restaurant = findViewById(R.id.restaurant);
         rank = findViewById(R.id.userRank);
         settings = findViewById(R.id.setting);
-        Log.d("asdf","1");
-        frg_home = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.frameLayout);Log.d("asdf","2");
-        frg_rank = new UserRankFragment();Log.d("asdf","3");
+
+        frg_home = new HomeFragment();
+        frg_rank = new UserRankFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.frameLayout,frg_home).commit();
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_home).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
             }
         });
 
@@ -45,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_rank).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
             }
         });
 

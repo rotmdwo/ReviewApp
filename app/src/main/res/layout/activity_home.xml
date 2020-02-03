@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="680dp"
-        android:name="org.techtown.reviewapp.home.HomeFragment"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp" />
 
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
         android:background="@color/point"
         android:gravity="center"
-        android:layout_gravity="bottom"
         android:orientation="horizontal">
 
         <ImageButton
@@ -25,36 +28,36 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:background="@color/point"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/home"
-            android:background="@color/point" />
+            app:srcCompat="@drawable/home" />
 
         <ImageButton
             android:id="@+id/restaurant"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:background="@color/point"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/restaurant"
-            android:background="@color/point"/>
+            app:srcCompat="@drawable/restaurant" />
 
         <ImageButton
             android:id="@+id/userRank"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:background="@color/point"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/rank"
-            android:background="@color/point"/>
+            app:srcCompat="@drawable/rank" />
 
         <ImageButton
             android:id="@+id/setting"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:scaleType="fitCenter"
             android:background="@color/point"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/settings" />
 
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
