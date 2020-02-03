@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     private ArrayList<Review> reviews = new ArrayList<Review>();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     Context context;
+    static int view_num = 0;
 
     public ReviewAdapter(Context context) { this.context = context; }
 
@@ -27,9 +29,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     @Override
     public ReviewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.review_item,parent,false);
+        View itemView;
 
-        return new ViewHolder(itemView);
+        switch(viewType){  //xml 파일 두 개 쓰는 방법
+            case 0:  // 사진 없을 때
+                itemView = inflater.inflate(R.layout.no_picture_status_item,parent,false);
+                return new ReviewAdapter.ViewHolder(itemView);
+            case 1:  // 사진 있을 때
+                itemView = inflater.inflate(R.layout.review_item,parent,false);
+                return new ReviewAdapter.ViewHolder(itemView);
+        }
+
+        itemView = inflater.inflate(R.layout.no_picture_status_item,parent,false);
+        return new ReviewAdapter.ViewHolder(itemView);
     }
 
     @Override
@@ -39,13 +51,23 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     }
 
     @Override
+    public int getItemViewType(int position) {  //xml 파일 두 개 쓰는 방법
+        Review review = reviews.get(position);
+        if(review.photo_num>=1){
+            return view_num = 1;
+        } else{
+            return view_num = 0;
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return reviews.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView user_nickname, user_rank, restaurant, date, user_text, like;
-        //ImageView user_photos, profile_photo;
+        ImageView user_photos, profile_photo;
         //RecyclerView comments;
 
         public ViewHolder(@NonNull View itemView) {
@@ -58,8 +80,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             user_text = itemView.findViewById(R.id.user_text);
             like = itemView.findViewById(R.id.like);
 
-            //user_photos = itemView.findViewById(R.id.user_photos);
-            //profile_photo = itemView.findViewById(R.id.profile_photo);
+            profile_photo = itemView.findViewById(R.id.profile_photo);
+
+            if(view_num == 1) {
+                user_photos = itemView.findViewById(R.id.user_photos);
+            }
         }
 
         public void setItem(Review review){
@@ -71,6 +96,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             user_text.setText(review.getUser_text());
             like.setText(Integer.toString(review.getLike()));
 
+            if(view_num == 1){
+
+            }
             //프로필사진
             /*
             String file_path = "profile_picture/profile_picture_"+review.getUser_id();
