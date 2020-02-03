@@ -18,5 +18,5 @@
 
 리뷰 클래스 예시<br>
 <div>
-<img src="https://user-images.githubusercontent.com/59321616/73631197-af1cd900-469b-11ea-9e96-83c512415653.jpg">
+<img width="300" src="https://user-images.githubusercontent.com/59321616/73631197-af1cd900-469b-11ea-9e96-83c512415653.jpg">
 </div>
