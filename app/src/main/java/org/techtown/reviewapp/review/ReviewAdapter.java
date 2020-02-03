@@ -1,28 +1,23 @@
 package org.techtown.reviewapp.review;
 
 import android.content.Context;
-import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
 
 import java.util.ArrayList;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
-    private ArrayList<Review> reviews = new ArrayList<>();
+    private ArrayList<Review> reviews = new ArrayList<Review>();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     Context context;
 
@@ -45,7 +40,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 0;
+        return reviews.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +53,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
             user_nickname = itemView.findViewById(R.id.user_nickname);
             user_rank = itemView.findViewById(R.id.user_rank);
-            restaurant = itemView.findViewById(R.id.profile_photo);
+            restaurant = itemView.findViewById(R.id.restaurant);
             date = itemView.findViewById(R.id.date);
             user_text = itemView.findViewById(R.id.user_text);
             like = itemView.findViewById(R.id.like);
@@ -68,12 +63,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         }
 
         public void setItem(Review review){
+
             user_nickname.setText(review.getUser_nickname());
             user_rank.setText(review.getUser_rank());
             restaurant.setText(review.getRestaurant());
             date.setText(review.getDate());
             user_text.setText(review.getUser_text());
-            like.setText(review.getLike());
+            like.setText(Integer.toString(review.getLike()));
 
             //프로필사진
             /*
