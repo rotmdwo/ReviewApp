@@ -1,4 +1,4 @@
-package org.techtown.reviewapp.review;
+package org.techtown.reviewapp.comment;
 
 public class Comment {
     //클래스 안의 변수는 카멜 케이스가 아닌 _로 구분.
