@@ -1,5 +1,6 @@
 package org.techtown.reviewapp.home;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -12,9 +13,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import com.pedro.library.AutoPermissions;
+import com.pedro.library.AutoPermissionsListener;
+
 import org.techtown.reviewapp.R;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements AutoPermissionsListener {
     ImageButton home, restaurant, rank, settings;
     HomeFragment frg_home;
     UserRankFragment frg_rank;
@@ -24,6 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        AutoPermissions.Companion.loadAllPermissions(this,102);
 
         manager= getSupportFragmentManager();
         mContext = this;
@@ -65,5 +71,20 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        AutoPermissions.Companion.parsePermissions(this,requestCode,permissions,this);
+    }
+    @Override
+    public void onDenied(int i, String[] strings) {
+    }
+
+    @Override
+    public void onGranted(int i, String[] strings) {
+
     }
 }

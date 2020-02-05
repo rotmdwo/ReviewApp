@@ -1,8 +1,10 @@
 package org.techtown.reviewapp.home;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -24,13 +27,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
+import org.techtown.reviewapp.comment.Comment;
+import org.techtown.reviewapp.review.Review;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class StatusFragment extends Fragment {
@@ -38,11 +54,15 @@ public class StatusFragment extends Fragment {
     EditText editText;
     TextView textView;
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference ref = storage.getReference().child("status_picture");
+    StorageReference ref = storage.getReference();
     Uri file;
     Bitmap image;
     Boolean pictureSelected = false;
     String file_name;
+    Date date;
+    int status_num;
+    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
+    private DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +72,35 @@ public class StatusFragment extends Fragment {
 
         editText = rootView.findViewById(R.id.editText);
 
+
+        reference.addListenerForSingleValueEvent(dataListener);
+        reference2.addChildEventListener(new ChildEventListener(){
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s){
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot,String s){
+                if(dataSnapshot.getKey().equals("num")){
+                    status_num = Integer.parseInt(dataSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot){
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot,String s){
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError){
+
+            }
+        });
         Button button = rootView.findViewById(R.id.button); // 취소버튼
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,29 +109,71 @@ public class StatusFragment extends Fragment {
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.button); // 등록버튼
+        Button button2 = rootView.findViewById(R.id.button2); // 등록버튼
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textView = rootView.findViewById(R.id.textView);
-                String text = textView.getText().toString();
+                String text = editText.getText().toString();
+                date = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+                String image_path = "SKKU/status_picture/"+format.format(date) +"_"+ restoreState();
 
-                if(pictureSelected == true){
+                if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 1, bytes);
                     String path = MediaStore.Images.Media.insertImage(((HomeActivity)HomeActivity.mContext).getContentResolver(), image, "temp", null);
-                    StorageReference ref2 = ref.child(file_name);
+                    StorageReference ref2 = ref.child(image_path);
                     ref2.putFile(Uri.parse(path));
-                } else if(!text.equals("")){
+                    Log.d("asdf",path);
 
+                    Map<String, Object> childUpdates1 = new HashMap<>();
+                    Map<String, Object> numUpdates = new HashMap<>();
+                    Map<String, Object> postValues = new HashMap<>();
+                    Map<String, Object> commentValues = new HashMap<>();
+                    commentValues.put("num",0);
+                    postValues.put("comments",commentValues);
+                    postValues.put("date",format.format(date));
+                    postValues.put("id",restoreState());
+                    postValues.put("like",0);
+                    postValues.put("picture",image_path);
+                    postValues.put("restaurant","NO");
+                    postValues.put("text",text);
+                    postValues.put("user_num",restoreState2());
+
+                    numUpdates.put("num",status_num+1);
+                    childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
+                    reference.updateChildren(childUpdates1);
+                    reference2.updateChildren(numUpdates);
+                    ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
+                } else if(!text.equals("")){  // 글만 썼을 때
+                    Map<String, Object> childUpdates1 = new HashMap<>();
+                    Map<String, Object> numUpdates = new HashMap<>();
+                    Map<String, Object> postValues = new HashMap<>();
+                    Map<String, Object> commentValues = new HashMap<>();
+                    commentValues.put("num",0);
+                    postValues.put("comments",commentValues);
+                    postValues.put("date",format.format(date));
+                    postValues.put("id",restoreState());
+                    postValues.put("like",0);
+                    postValues.put("picture","NO");
+                    postValues.put("restaurant","NO");
+                    postValues.put("text",text);
+                    postValues.put("user_num",restoreState2());
+
+                    numUpdates.put("num",status_num+1);
+                    childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
+                    reference.updateChildren(childUpdates1);
+                    reference2.updateChildren(numUpdates);
+                    ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
                 }
-                else{
+                else{  // 글조차 안 썼을 때
                     Toast.makeText(((HomeActivity)HomeActivity.mContext),"내용을 입력해주세요.",Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        Button button3 = rootView.findViewById(R.id.button); // 사진첨부 버튼
+        Button button3 = rootView.findViewById(R.id.button3); // 사진첨부 버튼
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,9 +189,8 @@ public class StatusFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d("asdf","1");
         if(requestCode == 101){
-            alreadyUploaded = false;
             file = data.getData();
 
             String[] filePath = { MediaStore.Images.Media.DATA };
@@ -108,10 +198,13 @@ public class StatusFragment extends Fragment {
             cursor.moveToFirst();
             String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
             cursor.close();
+            Log.d("asdf","2");
             ExifInterface exif = null;
             try{
+                Log.d("asdf","3");
                 exif = new ExifInterface(imagePath);
             } catch(IOException e){
+                Log.d("asdf","4");
                 e.printStackTrace();
             }
 
@@ -119,6 +212,7 @@ public class StatusFragment extends Fragment {
             image = BitmapFactory.decodeFile(imagePath);
             image = rotate(image, exifOrientationToDegrees(orientation));
             pictureSelected = true;
+
         }
     }
 
@@ -164,4 +258,30 @@ public class StatusFragment extends Fragment {
         }
         return bitmap;
     }
+
+    protected String restoreState(){
+        SharedPreferences pref = ((HomeActivity)HomeActivity.mContext).getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        return pref.getString("id","");
+    }
+
+    protected int restoreState2(){
+        SharedPreferences pref = ((HomeActivity)HomeActivity.mContext).getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        return pref.getInt("user_num",0);
+    }
+
+    ValueEventListener dataListener = new ValueEventListener() {  // status 개수 가져오기
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.getValue();
+            Map<String, Object> message_status = (Map<String, Object>) message0.get("Status");
+            status_num = Integer.parseInt(message_status.get("num").toString());
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+
 }
