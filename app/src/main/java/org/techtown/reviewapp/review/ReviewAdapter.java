@@ -2,6 +2,7 @@ package org.techtown.reviewapp.review;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ReviewAdapter.ViewHolder holder, int position) {
         Review review = reviews.get(position);
         holder.setItem(review);
+
+
     }
 
     @Override
@@ -94,7 +97,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         EditText input_comment;
         Button comment_upload;
         ImageView user_photoes, profile_photo;
-        //RecyclerView comments;
+        Boolean already_loaded = false; // 리사이클러뷰 안에 리사이클러뷰 넣었을 때 계속 add 되는 문제 해결
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -147,11 +150,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             like.setText(Integer.toString(review.getLike()));
             comment_num.setText(Integer.toString(review.comments.size()));
 
-            for(int i=1 ; i<=review.comments.size();i++){
-               adapter.addComment(review.comments.get(i-1));
+            if(already_loaded == false){ // 리사이클러뷰 안에 리사이클러뷰 넣었을 때 계속 add 되는 문제 해결
+                for(int i=1 ; i<=review.comments.size();i++){ Log.d("asd",Integer.toString(review.comments.size()));
+                    adapter.addComment(review.comments.get(i-1));
+                }
+                recyclerView.setAdapter(adapter);
             }
+            already_loaded = true;  // 리사이클러뷰 안에 리사이클러뷰 넣었을 때 계속 add 되는 문제 해결
 
-            recyclerView.setAdapter(adapter);
+
             if(view_num == 1){
                 for(int i = 1 ; i <= review.photo.size() ; i++){  // 사진 여러개 쓸 때 수정
                     String file_path = review.photo.get(i-1);
