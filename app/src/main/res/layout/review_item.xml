@@ -139,6 +139,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <EditText
+                android:id="@+id/input_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="댓글을 입력하세요..." />
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
