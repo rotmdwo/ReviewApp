@@ -8,8 +8,9 @@ public class Comment {
     String date;
 
     //생성자
-    public Comment(String user_id, String comment_text, String date) {
+    public Comment(String user_id, String user_nickname,String comment_text, String date) {
         this.user_id = user_id;
+        this.user_nickname = user_nickname;
         this.comment_text = comment_text;
         this.date = date;
     }
