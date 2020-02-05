@@ -9,11 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.techtown.reviewapp.R;
+import org.techtown.reviewapp.comment.Comment;
+import org.techtown.reviewapp.comment.CommentAdapter;
+import org.techtown.reviewapp.home.HomeActivity;
 
 import java.util.ArrayList;
 
@@ -22,6 +26,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     FirebaseStorage storage = FirebaseStorage.getInstance();
     Context context;
     static int view_num = 0;
+    RecyclerView recyclerView;
+    CommentAdapter adapter;
 
     public ReviewAdapter(Context context) { this.context = context; }
 
@@ -79,6 +85,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             date = itemView.findViewById(R.id.date);
             user_text = itemView.findViewById(R.id.user_text);
             like = itemView.findViewById(R.id.like);
+            recyclerView = itemView.findViewById(R.id.comments);
+            recyclerView.setLayoutManager(new LinearLayoutManager((HomeActivity) HomeActivity.mContext,LinearLayoutManager.VERTICAL,false)) ;
+            adapter = new CommentAdapter((HomeActivity)HomeActivity.mContext);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
@@ -96,6 +105,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             user_text.setText(review.getUser_text());
             like.setText(Integer.toString(review.getLike()));
 
+            for(int i=1 ; i<=review.comments.size();i++){
+               adapter.addComment(review.comments.get(i-1));
+            }
+
+            recyclerView.setAdapter(adapter);
             if(view_num == 1){
 
             }

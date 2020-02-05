@@ -1,6 +1,7 @@
 package org.techtown.reviewapp.home;
 
 
+import android.content.Context;
 import android.database.SQLException;
 import android.os.Bundle;
 
@@ -83,7 +84,7 @@ public class HomeFragment extends Fragment {
                         String id = (String) message2.get("id");
                         String text = (String) message2.get("text");
 
-                        comments.add(new Comment(date,id,text));
+                        comments.add(new Comment(id,text,date));
                     }
 
                     String id = (String) message1.get("id");
