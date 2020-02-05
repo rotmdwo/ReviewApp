@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.primitives.Bytes;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +43,9 @@ import org.techtown.reviewapp.comment.Comment;
 import org.techtown.reviewapp.review.Review;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,10 +125,16 @@ public class StatusFragment extends Fragment {
 
                 if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
-                    String path = MediaStore.Images.Media.insertImage(((HomeActivity)HomeActivity.mContext).getContentResolver(), image, "temp", null);
+                    image.compress(Bitmap.CompressFormat.JPEG, 10, bytes);
+                    //String path = MediaStore.Images.Media.insertImage(((HomeActivity)HomeActivity.mContext).getContentResolver(), image, "temp", null);
+                    //StorageReference ref2 = ref.child(image_path);
+                    //ref2.putFile(Uri.parse(path));
+
+                    // 사진 압축률, 앨범에 압축사진 저장 되던 문제 해결
+                    byte[] byteArray = bytes.toByteArray();
                     StorageReference ref2 = ref.child(image_path);
-                    ref2.putFile(Uri.parse(path));
+                    ref2.putBytes(byteArray);
+
 
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     Map<String, Object> numUpdates = new HashMap<>();
@@ -145,6 +155,9 @@ public class StatusFragment extends Fragment {
                     reference.updateChildren(childUpdates1);
                     reference2.updateChildren(numUpdates);
                     ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
+
+
+
                 } else if(!text.equals("")){  // 글만 썼을 때
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     Map<String, Object> numUpdates = new HashMap<>();
@@ -188,7 +201,7 @@ public class StatusFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("asdf","1");
+
         if(requestCode == 101){
             file = data.getData();
 
@@ -197,13 +210,13 @@ public class StatusFragment extends Fragment {
             cursor.moveToFirst();
             String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
             cursor.close();
-            Log.d("asdf","2");
+
             ExifInterface exif = null;
             try{
-                Log.d("asdf","3");
+
                 exif = new ExifInterface(imagePath);
             } catch(IOException e){
-                Log.d("asdf","4");
+
                 e.printStackTrace();
             }
 
