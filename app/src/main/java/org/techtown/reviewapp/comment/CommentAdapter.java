@@ -65,9 +65,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         public void setItem(Comment comment){
 
-            user_nickname.setText(comment.get_user_id());
-            user_comment.setText(comment.get_comment_text());
-            date.setText(comment.get_date());
+            user_nickname.setText(comment.getUser_id());
+            user_comment.setText(comment.getComment_text());
+            date.setText(comment.getDate());
         }
     }
 
