@@ -3,15 +3,24 @@ package org.techtown.reviewapp.review;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.techtown.reviewapp.R;
@@ -19,15 +28,22 @@ import org.techtown.reviewapp.comment.Comment;
 import org.techtown.reviewapp.comment.CommentAdapter;
 import org.techtown.reviewapp.home.HomeActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
+    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
     private ArrayList<Review> reviews = new ArrayList<Review>();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     Context context;
     static int view_num = 0;
     RecyclerView recyclerView;
     CommentAdapter adapter;
+    int upload_num;
+    String upload_text;
 
     public ReviewAdapter(Context context) { this.context = context; }
 
@@ -72,11 +88,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user_nickname, user_rank, restaurant, date, user_text, like;
+        TextView user_nickname, user_rank, restaurant, date, user_text, like, comment_num;
+        EditText input_comment;
+        Button comment_upload;
         ImageView user_photos, profile_photo;
         //RecyclerView comments;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             user_nickname = itemView.findViewById(R.id.user_nickname);
@@ -85,6 +103,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             date = itemView.findViewById(R.id.date);
             user_text = itemView.findViewById(R.id.user_text);
             like = itemView.findViewById(R.id.like);
+            comment_num = itemView.findViewById(R.id.comment_num);
+            input_comment = itemView.findViewById(R.id.input_comment);
+            comment_upload = itemView.findViewById(R.id.comment_upload);
             recyclerView = itemView.findViewById(R.id.comments);
             recyclerView.setLayoutManager(new LinearLayoutManager((HomeActivity) HomeActivity.mContext,LinearLayoutManager.VERTICAL,false)) ;
             adapter = new CommentAdapter((HomeActivity)HomeActivity.mContext);
@@ -94,6 +115,24 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             if(view_num == 1) {
                 user_photos = itemView.findViewById(R.id.user_photos);
             }
+
+            comment_upload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        upload_num = pos;
+                        upload_text = input_comment.getText().toString();
+                        if(upload_text.equals("")) {
+                            Toast.makeText(context, "최소한 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        reference.addListenerForSingleValueEvent(dataListener1);
+                        input_comment.setText("");
+                    }
+                }
+            });
+
         }
 
         public void setItem(Review review){
@@ -104,6 +143,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             date.setText(review.getDate());
             user_text.setText(review.getUser_text());
             like.setText(Integer.toString(review.getLike()));
+            comment_num.setText(Integer.toString(review.comments.size()));
 
             for(int i=1 ; i<=review.comments.size();i++){
                adapter.addComment(review.comments.get(i-1));
@@ -146,8 +186,64 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         }
     }
 
+    //댓글 달기 구현하는 데이터 리스너
+    ValueEventListener dataListener1 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            Map<String, Object> message1 = (Map<String, Object>) dataSnapshot.getValue();
+            //리사이클러뷰에서 몇번째 게시물: upload_num
+
+            //DB상에서 num값(게시물의 총 개수)을 찾는다.
+            //      target_num = Status 밑의 num값 - 포지션 = 댓글을 달았던 Status 번호
+            int target_num = (Integer.parseInt(message1.get("num").toString()) - upload_num);
+
+            //DB상에서 target_num 밑의 num을 찾는다.
+            //      target_comment에 넣는다.
+            Map<String, Object> message2 = (Map<String, Object>)dataSnapshot.child(Integer.toString(target_num)).child("comments").getValue();
+
+            int target_comment = Integer.parseInt(message2.get("num").toString());
+            target_comment++;
+            //target_comment를 1 올리고,
+            Map<String, Object> childUpdates1 = new HashMap<>();
+            Map<String, Object> postValues = new HashMap<>();
+
+            //현재 시간을 구해서 넣는다(DB: date).
+            Date time = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+            postValues.put("date", ""+format.format(time));
+            //Log.d("datasnap", "현재 시각은 "+format.format(time)+"입니다.");
+
+            //자기 아이디를 찾아서 넣는다(DB: id).
+            postValues.put("id", ""+restoreState());
+            //Log.d("snap", postValues.values().toString());
+
+            //자기 번호를 찾아서 넣는다(DB: user_num)
+            postValues.put("user_num", ""+restoreState2());
+
+            //입력한 댓글 내용을 찾아서 넣는다(DB: text)
+            postValues.put("text", ""+upload_text);
+
+            childUpdates1.put(target_num + "/comments/" + target_comment, postValues);
+            childUpdates1.put(target_num + "/comments/num", target_comment);
+            reference.updateChildren(childUpdates1);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     public void addReview(Review review) {
         reviews.add(review);
+    }
+
+    public String restoreState() {
+        return "bestowing";
+    }
+
+    public String restoreState2() {
+        return "2";
     }
 
 }
