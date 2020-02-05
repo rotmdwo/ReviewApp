@@ -96,11 +96,13 @@ public class HomeFragment extends Fragment {
                     String text = (String) message1.get("text");
                     int like = Integer.parseInt(message1.get("like").toString());
                     String picture = (String) message1.get("picture");
+                    ArrayList<String> photo = new ArrayList<>();
+                    photo.add(picture);
 
                     if(picture.equals("NO")){
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0));
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0,photo));
                     } else{
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1));
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1,photo));
                     }
                 }
             } else{
@@ -133,11 +135,13 @@ public class HomeFragment extends Fragment {
                     String text = (String) message1.get("text");
                     int like = Integer.parseInt(message1.get("like").toString());
                     String picture = (String) message1.get("picture");
+                    ArrayList<String> photo = new ArrayList<>();
+                    photo.add(picture);
 
                     if(picture.equals("NO")){
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0));
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0,photo));
                     } else{
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1));
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1,photo));
                     }
                 }
             }

@@ -1,9 +1,8 @@
 package org.techtown.reviewapp.review;
 
 import android.content.Context;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,15 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
-import org.techtown.reviewapp.comment.Comment;
 import org.techtown.reviewapp.comment.CommentAdapter;
 import org.techtown.reviewapp.home.HomeActivity;
 
@@ -91,7 +93,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         TextView user_nickname, user_rank, restaurant, date, user_text, like, comment_num;
         EditText input_comment;
         Button comment_upload;
-        ImageView user_photos, profile_photo;
+        ImageView user_photoes, profile_photo;
         //RecyclerView comments;
 
         public ViewHolder(@NonNull final View itemView) {
@@ -113,7 +115,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
             if(view_num == 1) {
-                user_photos = itemView.findViewById(R.id.user_photos);
+                user_photoes = itemView.findViewById(R.id.user_photoes);
             }
 
             comment_upload.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +153,18 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
             recyclerView.setAdapter(adapter);
             if(view_num == 1){
+                for(int i = 1 ; i <= review.photo.size() ; i++){  // 사진 여러개 쓸 때 수정
+                    String file_path = review.photo.get(i-1);
+                    StorageReference ref = storage.getReference().child(file_path);
+                    ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if(task.isSuccessful()){
+                                Glide.with(HomeActivity.mContext).load(task.getResult()).into(user_photoes);
+                            }
+                        }
+                    });
+                }
 
             }
             //프로필사진

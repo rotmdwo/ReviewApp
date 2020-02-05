@@ -1,5 +1,7 @@
 package org.techtown.reviewapp.review;
 
+import android.widget.ArrayAdapter;
+
 import org.techtown.reviewapp.comment.Comment;
 
 import java.util.ArrayList;
@@ -13,9 +15,10 @@ public class Review {
     String date;
     String user_text;
     int like;
+    ArrayList<String> photo = new ArrayList<>();
     int photo_num;
 
-    public Review(ArrayList<Comment> comments, String user_id, String user_nickname, String user_rank, String restaurant, String date, String user_text, int like, int photo_num) {
+    public Review(ArrayList<Comment> comments, String user_id, String user_nickname, String user_rank, String restaurant, String date, String user_text, int like, int photo_num, ArrayList<String> photo) {
         this.comments = comments;
         this.user_id = user_id;
         this.user_nickname = user_nickname;
@@ -25,6 +28,7 @@ public class Review {
         this.user_text = user_text;
         this.like = like;
         this.photo_num = photo_num;
+        this.photo = photo;
     }
 
     public String getUser_id() { return this.user_id; }
@@ -96,5 +100,13 @@ public class Review {
 
     public void setPhoto_num(int photo_num) {
         this.photo_num = photo_num;
+    }
+
+    public ArrayList<String> getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(ArrayList<String> photo) {
+        this.photo = photo;
     }
 }

@@ -121,11 +121,10 @@ public class StatusFragment extends Fragment {
 
                 if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 1, bytes);
+                    image.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
                     String path = MediaStore.Images.Media.insertImage(((HomeActivity)HomeActivity.mContext).getContentResolver(), image, "temp", null);
                     StorageReference ref2 = ref.child(image_path);
                     ref2.putFile(Uri.parse(path));
-                    Log.d("asdf",path);
 
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     Map<String, Object> numUpdates = new HashMap<>();
