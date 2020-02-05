@@ -14,27 +14,37 @@ public class Comment {
         this.date = date;
     }
 
-    public String get_user_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void set_user_id(String user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
-    public String get_comment_text() {
+    public String getUser_nickname() {
+        return user_nickname;
+    }
+
+    public void setUser_nickname(String user_nickname) {
+        this.user_nickname = user_nickname;
+    }
+
+    public String getComment_text() {
         return comment_text;
     }
 
-    public void set_comment_text(String comment_text) {
+    public void setComment_text(String comment_text) {
         this.comment_text = comment_text;
     }
 
-    public String get_date() {
+    public String getDate() {
         return date;
     }
 
-    public void set_date(String date) {
+    public void setDate(String date) {
         this.date = date;
     }
+
+
 }
