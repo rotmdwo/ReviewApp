@@ -125,7 +125,7 @@ public class StatusFragment extends Fragment {
 
                 if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 10, bytes);
+                    image.compress(Bitmap.CompressFormat.JPEG, 15, bytes);
                     //String path = MediaStore.Images.Media.insertImage(((HomeActivity)HomeActivity.mContext).getContentResolver(), image, "temp", null);
                     //StorageReference ref2 = ref.child(image_path);
                     //ref2.putFile(Uri.parse(path));

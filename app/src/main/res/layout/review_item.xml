@@ -145,30 +145,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="130dp"
+                android:layout_marginBottom="0dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/input_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
                     android:layout_marginLeft="10dp"
+                    android:layout_weight="9"
                     android:hint="댓글을 입력하세요..."
+                    android:backgroundTint="#FFFFFF"
                     android:singleLine="true" />
 
                 <Button
                     android:id="@+id/comment_upload"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="1"
                     android:text="완료" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#228C92AC"
+                android:text="" />
 
         </LinearLayout>
 
