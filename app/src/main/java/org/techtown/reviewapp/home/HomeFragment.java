@@ -69,45 +69,79 @@ public class HomeFragment extends Fragment {
             if(status_num >= 10){  // 아직 미완성
                 for(int i = status_num ; i > status_num - 10 ; i--){
                     message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
+                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
+                    int comment_num = Integer.parseInt(message_comment.get("num").toString());
+                    ArrayList<Comment> comments = new ArrayList<>();
+                    for(int j=1 ; j<=comment_num ; j++){
+                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                        String date = (String) message2.get("date");
+                        String id = (String) message2.get("id");
+                        String text = (String) message2.get("text");
+                        int user_num = Integer.parseInt(message2.get("user_num").toString());
+                        Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
+                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                        String nickname = (String) message_user2.get("nickname");
+
+                        comments.add(new Comment(id,nickname,text,date));
+                    }
+
+                    String id = (String) message1.get("id");
+                    int user_num = Integer.parseInt(message1.get("user_num").toString());
+                    Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
+                    Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                    String nickname = (String) message_user2.get("nickname");
+                    int level = Integer.parseInt(message_user2.get("level").toString());
+                    String restaurant = (String) message1.get("restaurant");
+                    String date = (String) message1.get("date");
+                    String text = (String) message1.get("text");
+                    int like = Integer.parseInt(message1.get("like").toString());
+                    String picture = (String) message1.get("picture");
+
+                    if(picture.equals("NO")){
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0));
+                    } else{
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1));
+                    }
                 }
             } else{
                 for(int i = status_num ; i >= 1 ; i--){
                     message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
+                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
+                    int comment_num = Integer.parseInt(message_comment.get("num").toString());
+                    ArrayList<Comment> comments = new ArrayList<>();
+                    for(int j=1 ; j<=comment_num ; j++){
+                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                        String date = (String) message2.get("date");
+                        String id = (String) message2.get("id");
+                        String text = (String) message2.get("text");
+                        int user_num = Integer.parseInt(message2.get("user_num").toString());
+                        Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
+                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                        String nickname = (String) message_user2.get("nickname");
+
+                        comments.add(new Comment(id,nickname,text,date));
+                    }
+
+                    String id = (String) message1.get("id");
+                    int user_num = Integer.parseInt(message1.get("user_num").toString());
+                    Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
+                    Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                    String nickname = (String) message_user2.get("nickname");
+                    int level = Integer.parseInt(message_user2.get("level").toString());
+                    String restaurant = (String) message1.get("restaurant");
+                    String date = (String) message1.get("date");
+                    String text = (String) message1.get("text");
+                    int like = Integer.parseInt(message1.get("like").toString());
+                    String picture = (String) message1.get("picture");
+
+                    if(picture.equals("NO")){
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0));
+                    } else{
+                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1));
+                    }
                 }
             }
-            Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
-            int comment_num = Integer.parseInt(message_comment.get("num").toString());
-            ArrayList<Comment> comments = new ArrayList<>();
-            for(int j=1 ; j<=comment_num ; j++){
-                Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                String date = (String) message2.get("date");
-                String id = (String) message2.get("id");
-                String text = (String) message2.get("text");
-                int user_num = Integer.parseInt(message2.get("user_num").toString());
-                Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-                Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                String nickname = (String) message_user2.get("nickname");
 
-                comments.add(new Comment(id,nickname,text,date));
-            }
-
-            String id = (String) message1.get("id");
-            int user_num = Integer.parseInt(message1.get("user_num").toString());
-            Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-            Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-            String nickname = (String) message_user2.get("nickname");
-            int level = Integer.parseInt(message_user2.get("level").toString());
-            String restaurant = (String) message1.get("restaurant");
-            String date = (String) message1.get("date");
-            String text = (String) message1.get("text");
-            int like = Integer.parseInt(message1.get("like").toString());
-            String picture = (String) message1.get("picture");
-
-            if(picture.equals("NO")){
-                reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0));
-            } else{
-                reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1));
-            }
 
             recyclerView.setAdapter(reviewAdapter);
         }
@@ -117,6 +151,5 @@ public class HomeFragment extends Fragment {
 
         }
     };
-
 
 }
