@@ -5,17 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.reviewapp.R;
-import org.techtown.reviewapp.home.HomeActivity;
-import org.techtown.reviewapp.review.Review;
-import org.techtown.reviewapp.review.ReviewAdapter;
+
 
 import java.util.ArrayList;
 
@@ -31,18 +27,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @NonNull
     @Override
     public CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("asdf","C");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        Log.d("asdf","D");
         View itemView;
+
         itemView = inflater.inflate(R.layout.comment_item,parent,false);
         return new CommentAdapter.ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
-        Comment comment = comments.get(position);
-        holder.setItem(comment);
+        Comment review = comments.get(position);
+        holder.setItem(review);
     }
 
     @Override
@@ -63,17 +58,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         }
 
-        public void setItem(Comment comment){
-
-            user_nickname.setText(comment.getUser_id());
-            user_comment.setText(comment.getComment_text());
+        public void setItem(Comment comment) {
+            user_nickname.setText(comment.getUser_nickname());
             date.setText(comment.getDate());
+            user_comment.setText(comment.getComment_text());
         }
+
     }
 
     public void addComment(Comment comment) {
-        Log.d("asdf","A");
         comments.add(comment);
-        Log.d("asdf","B");
     }
 }
