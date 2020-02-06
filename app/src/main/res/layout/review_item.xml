@@ -166,18 +166,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="9"
-                    android:hint="댓글을 입력하세요..."
+                    android:layout_weight="1"
                     android:backgroundTint="#FFFFFF"
+                    android:hint="댓글을 입력하세요..."
                     android:singleLine="true" />
 
                 <Button
                     android:id="@+id/comment_upload"
-                    android:layout_width="50dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_weight="1"
                     android:text="완료" />
 
             </LinearLayout>
