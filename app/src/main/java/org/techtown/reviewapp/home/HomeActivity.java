@@ -41,13 +41,14 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
 
         frg_home = new HomeFragment();
         frg_rank = new UserRankFragment();
-        manager.beginTransaction().add(R.id.frameLayout,frg_home).commit();
+        manager.beginTransaction().add(R.id.frameLayout,frg_home).add(R.id.frameLayout,frg_rank).hide(frg_rank).commit();
 
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                manager.beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                //manager.beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                manager.beginTransaction().hide(frg_rank).show(frg_home).commit();
             }
         });
 
@@ -61,8 +62,8 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
         rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                manager.beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-
+                //manager.beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                manager.beginTransaction().hide(frg_home).show(frg_rank).commit();
             }
         });
 
