@@ -28,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
+import org.techtown.reviewapp.comment.Comment;
 import org.techtown.reviewapp.comment.CommentAdapter;
 import org.techtown.reviewapp.home.HomeActivity;
 
@@ -247,6 +248,18 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             childUpdates1.put(target_num + "/comments/" + target_comment, postValues);
             childUpdates1.put(target_num + "/comments/num", target_comment);
             reference.updateChildren(childUpdates1);
+
+            //끝났으면 받아오기
+            Map<String, Object> message3 = (Map<String, Object>) dataSnapshot.child(Integer.toString(target_num)).child("comments").getValue();
+            int newlyUpdate = Integer.parseInt(message3.get("num").toString());
+            for(int i=target_comment; i<=newlyUpdate; i++) {
+                Map<String, Object> message4 = (Map<String, Object>) message_comment.get(Integer.toString(i));
+                String date = (String)message4.get("date");
+                String id = (String)message4.get("id");
+                String text = (String)message4.get("text");
+                String nickname = (String)"bestowing";
+                //reviews.get(upload_num).comments.add(new Comment(id,nickname,text,date));
+            }
         }
 
         @Override
