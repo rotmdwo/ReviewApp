@@ -1,6 +1,8 @@
 package org.techtown.reviewapp.review;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.Resource;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.io.Resources;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -97,8 +101,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         TextView user_nickname, user_rank, restaurant, date, user_text, like, comment_num;
         EditText input_comment;
         Button comment_upload;
-        ImageView user_photoes, profile_photo;
+        ImageView user_photoes, profile_photo, like_button;
         Boolean already_loaded = false; // 리사이클러뷰 안에 리사이클러뷰 넣었을 때 계속 add 되는 문제 해결
+        Boolean liked = false;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -115,6 +120,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             recyclerView = itemView.findViewById(R.id.comments);
             recyclerView.setLayoutManager(new LinearLayoutManager((HomeActivity) HomeActivity.mContext,LinearLayoutManager.VERTICAL,false)) ;
             adapter = new CommentAdapter((HomeActivity)HomeActivity.mContext);
+            like_button = itemView.findViewById(R.id.imageView);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
@@ -139,16 +145,35 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 }
             });
 
+            like_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(liked == false){
+                        like_button.setImageResource(R.drawable.like);
+                        liked = true;
+                    } else{
+                        like_button.setImageResource(R.drawable.no_like);
+                        liked = false;
+                    }
+
+                }
+            });
+
         }
 
         public void setItem(Review review){
 
             user_nickname.setText(review.getUser_nickname());
             user_rank.setText(review.getUser_rank());
-            restaurant.setText(review.getRestaurant());
+            if(review.getRestaurant().equals("NO")){
+                restaurant.setText("");
+            } else{
+                restaurant.setText(review.getRestaurant());
+            }
+
             date.setText(review.getDate());
             user_text.setText(review.getUser_text());
-            like.setText(Integer.toString(review.getLike()));
+            like.setText(Integer.toString(review.getLike()) + "명이 좋아합니다.");
             comment_num.setText(Integer.toString(review.comments.size()));
 
             if(already_loaded == false){ // 리사이클러뷰 안에 리사이클러뷰 넣었을 때 계속 add 되는 문제 해결
