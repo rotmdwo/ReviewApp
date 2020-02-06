@@ -275,7 +275,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             reference.updateChildren(childUpdates1);
 
             //끝났으면 받아오기
-            Map<String, Object> message3 = (Map<String, Object>) dataSnapshot.child(Integer.toString(target_num)).child("comments").getValue();
+            /*Map<String, Object> message3 = (Map<String, Object>) dataSnapshot.child(Integer.toString(target_num)).child("comments").getValue();
             int newlyUpdate = Integer.parseInt(message3.get("num").toString());
             for(int i=target_comment; i<=newlyUpdate; i++) {
                 Map<String, Object> message4 = (Map<String, Object>) message_comment.get(Integer.toString(i));
@@ -284,7 +284,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 String text = (String)message4.get("text");
                 String nickname = (String)"bestowing";
                 //reviews.get(upload_num).comments.add(new Comment(id,nickname,text,date));
-            }
+            }*/
         }
 
         @Override
