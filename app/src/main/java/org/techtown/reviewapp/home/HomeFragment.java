@@ -2,7 +2,6 @@ package org.techtown.reviewapp.home;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.techtown.reviewapp.R;
-import org.techtown.reviewapp.comment.Comment;
-import org.techtown.reviewapp.review.Review;
-import org.techtown.reviewapp.review.ReviewAdapter;
+import org.techtown.reviewapp.post.Post;
+import org.techtown.reviewapp.post.PostAdapter;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,7 +28,7 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
-    ReviewAdapter reviewAdapter;
+    PostAdapter postAdapter;
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
 
@@ -39,7 +37,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
 
-        reviewAdapter = new ReviewAdapter(getContext());
+        postAdapter = new PostAdapter(getContext());
 
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         recyclerView = rootView.findViewById(R.id.review_list) ;
@@ -71,19 +69,6 @@ public class HomeFragment extends Fragment {
                     message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
                     Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
                     int comment_num = Integer.parseInt(message_comment.get("num").toString());
-                    ArrayList<Comment> comments = new ArrayList<>();
-                    for(int j=1 ; j<=comment_num ; j++){
-                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                        String date = (String) message2.get("date");
-                        String id = (String) message2.get("id");
-                        String text = (String) message2.get("text");
-                        int user_num = Integer.parseInt(message2.get("user_num").toString());
-                        Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                        String nickname = (String) message_user2.get("nickname");
-
-                        comments.add(new Comment(id,nickname,text,date));
-                    }
 
                     String id = (String) message1.get("id");
                     int user_num = Integer.parseInt(message1.get("user_num").toString());
@@ -99,30 +84,22 @@ public class HomeFragment extends Fragment {
                     ArrayList<String> photo = new ArrayList<>();
                     photo.add(picture);
 
+                    Post post = new Post();
+
                     if(picture.equals("NO")){
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0,photo));
+                        post.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, status_num);
+                        postAdapter.addItem(post);
                     } else{
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1,photo));
+                        post.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, status_num, photo, 1);
+                        postAdapter.addItem(post);
                     }
+
                 }
-            } else{
+            } else {
                 for(int i = status_num ; i >= 1 ; i--){
-                    message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
-                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
+                    message1 = (Map<String, Object>) message_status.get(Integer.toString(i)); //게시글 정보
+                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments"); //댓글 정보
                     int comment_num = Integer.parseInt(message_comment.get("num").toString());
-                    ArrayList<Comment> comments = new ArrayList<>();
-                    for(int j=1 ; j<=comment_num ; j++){
-                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                        String date = (String) message2.get("date");
-                        String id = (String) message2.get("id");
-                        String text = (String) message2.get("text");
-                        int user_num = Integer.parseInt(message2.get("user_num").toString());
-                        Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                        String nickname = (String) message_user2.get("nickname");
-
-                        comments.add(new Comment(id,nickname,text,date));
-                    }
 
                     String id = (String) message1.get("id");
                     int user_num = Integer.parseInt(message1.get("user_num").toString());
@@ -139,15 +116,34 @@ public class HomeFragment extends Fragment {
                     photo.add(picture);
 
                     if(picture.equals("NO")){
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,0,photo));
-                    } else{
-                        reviewAdapter.addReview(new Review(comments, id, nickname, "레벨 "+Integer.toString(level), restaurant, date, text, like,1,photo));
+                        Post status = new Post();
+                        status.setComment_num(comment_num);
+                        status.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, i);
+                        postAdapter.addItem(status);
+                    } else {
+                        Post review = new Post();
+                        review.setComment_num(comment_num);
+                        review.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, i, photo, 1);
+                        postAdapter.addItem(review);
+                    }
+
+                    for(int j=comment_num ; j>=1 ; j--){
+                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                        date = (String) message2.get("date");
+                        id = (String) message2.get("id");
+                        text = (String) message2.get("text");
+                        user_num = Integer.parseInt(message2.get("user_num").toString());
+                        message_user = (Map<String, Object>) message0.get("user");
+                        message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                        nickname = (String) message_user2.get("nickname");
+
+                        Post comment = new Post();
+                        comment.setComment(id, nickname, date, text,2);
+                        postAdapter.addItem(comment);
                     }
                 }
             }
-
-
-            recyclerView.setAdapter(reviewAdapter);
+            recyclerView.setAdapter(postAdapter);
         }
 
         @Override
