@@ -86,6 +86,14 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             user_text = itemView.findViewById(R.id.user_comment);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            });
         }
 
         private void bind(int position) {
