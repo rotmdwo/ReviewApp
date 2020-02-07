@@ -274,7 +274,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(viewType == REVIEW) {
             return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.review_item, parent,false));
         } else if(viewType == STATUS) {
-            return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.no_picture_status_item, parent,false));
+            return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.status_item, parent,false));
         } else if(viewType == COMMENT) {
             return new CommentViewHolder(LayoutInflater.from(context).inflate(R.layout.comment_item, parent,false));
         }
