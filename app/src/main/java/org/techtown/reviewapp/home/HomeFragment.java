@@ -2,6 +2,7 @@ package org.techtown.reviewapp.home;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,12 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements PostAdapter.ItemAddListener {
     RecyclerView recyclerView;
     PostAdapter postAdapter;
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
+    int list_position, add_comment, upload_num;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,7 +40,7 @@ public class HomeFragment extends Fragment {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
 
         postAdapter = new PostAdapter(getContext());
-
+        postAdapter.itemAddListener = this;
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         recyclerView = rootView.findViewById(R.id.review_list) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false)) ;
@@ -152,4 +154,47 @@ public class HomeFragment extends Fragment {
         }
     };
 
+    ValueEventListener dataListener2 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(upload_num)).child("comments").getValue();
+            int target_comment = Integer.parseInt(message0.get("num").toString());
+            Log.d("addto", "i는 " + target_comment + " to " + (add_comment+1));
+            for(int i=target_comment; i>=add_comment+1; i--) {
+                Log.d("addto", "3");
+                Map<String, Object> message1 = (Map<String, Object>) message0.get(Integer.toString(i));
+                String date = (String) message1.get("date");
+                String id = (String) message1.get("id");
+                String text = (String) message1.get("text");
+                int user_num = Integer.parseInt(message1.get("user_num").toString());
+
+                Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
+                String nickname = (String) message_user.get("nickname");
+                //message_user = (Map<String, Object>) message0.get("user");
+                //message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                //nickname = (String) message_user2.get("nickname");
+
+                postAdapter.comment_add(list_position);
+                Post comment = new Post();
+                comment.setComment(id, nickname, date, text,2);
+                postAdapter.addItem(comment, list_position+1);
+                postAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    @Override
+    public void itemAdded(int prev_num, int position, int DB_num) {
+        //DB에서
+        add_comment = prev_num;
+        list_position = position;
+        upload_num = DB_num;
+        reference.addListenerForSingleValueEvent(dataListener2);
+    }
 }

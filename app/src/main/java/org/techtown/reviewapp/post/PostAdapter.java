@@ -39,6 +39,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //DB
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+    int upload_num, upload_pos, commentNum;
+    String upload_text;
 
     //viewType
     public int REVIEW = 0; //사진 있는 리뷰
@@ -53,8 +55,12 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //etc
     static int view_num = 0;
-    int upload_num;
-    String upload_text;
+
+    public ItemAddListener itemAddListener;
+
+    public interface ItemAddListener {
+        void itemAdded(int prev_num, int position, int DB_num);
+    }
 
     //생성자
     public PostAdapter(Context context) { this.context = context; }
@@ -119,8 +125,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if(pos != RecyclerView.NO_POSITION) {
                         upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
-                        Log.d("shit", pos + "번째 뷰");
-                        Log.d("shit", upload_num + "번째 게시물");
+                        upload_pos = pos;
+                        commentNum = posts.get(pos).getComment_num();
                         if(upload_text.equals("")) {
                             Toast.makeText(context, "최소한 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
                             return;
@@ -204,8 +210,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if(pos != RecyclerView.NO_POSITION) {
                         upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
-                        Log.d("shit", pos + "번째 뷰");
-                        Log.d("shit", upload_num + "번째 게시물");
+                        upload_pos = pos;
+                        commentNum = posts.get(pos).getComment_num();
                         if(upload_text.equals("")) {
                             Toast.makeText(context, "최소한 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
                             return;
@@ -385,6 +391,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
             childUpdates1.put(upload_num + "/comments/num", target_comment);
             reference.updateChildren(childUpdates1);
+
+            if(itemAddListener!=null) {
+                itemAddListener.itemAdded(commentNum, upload_pos, upload_num);
+            }
         }
 
         @Override
@@ -393,9 +403,16 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     };
 
-
     public void addItem(Post post) {
         posts.add(post);
+    }
+
+    public void addItem(Post post, int index) { posts.add(index, post); }
+
+    public void comment_add(int position) {
+        Log.d("comment_num", "현재 댓글 갯수는: " + posts.get(position).comment_num);
+        posts.get(position).comment_num += 1;
+        Log.d("comment_num", "추가된 뒤 댓글 갯수는: " + posts.get(position).comment_num);
     }
 
     public String restoreState() {
