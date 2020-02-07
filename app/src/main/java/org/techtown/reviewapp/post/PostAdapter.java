@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,6 +36,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //DB
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -56,6 +59,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //etc
     static int view_num = 0;
 
+    InputMethodManager imm;
+
     public ItemAddListener itemAddListener;
 
     public interface ItemAddListener {
@@ -63,7 +68,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     //생성자
-    public PostAdapter(Context context) { this.context = context; }
+    public PostAdapter(Context context) {
+        this.context = context;
+        imm = (InputMethodManager)context.getSystemService(INPUT_METHOD_SERVICE);
+    }
 
     private class CommentViewHolder extends RecyclerView.ViewHolder {
         //Review, Status, 댓글의 공통적인 요소
@@ -118,11 +126,20 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            });
+
             comment_upload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
+                        imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
                         upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
@@ -203,11 +220,20 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            });
+
             comment_upload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
+                        imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
                         upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
@@ -312,7 +338,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(viewType == REVIEW) {
             return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.review_item, parent,false));
         } else if(viewType == STATUS) {
-            return new ReviewViewHolder(LayoutInflater.from(context).inflate(R.layout.status_item, parent,false));
+            return new StatusViewHolder(LayoutInflater.from(context).inflate(R.layout.status_item, parent,false));
         } else if(viewType == COMMENT) {
             return new CommentViewHolder(LayoutInflater.from(context).inflate(R.layout.comment_item, parent,false));
         }
@@ -328,7 +354,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(viewType == REVIEW) {
             ((ReviewViewHolder) holder).bind(position);
         } else if(viewType == STATUS) {
-            ((ReviewViewHolder) holder).bind(position);
+            ((StatusViewHolder) holder).bind(position);
         } else if(viewType == COMMENT) {
             ((CommentViewHolder) holder).bind(position);
         } else {
@@ -358,17 +384,14 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Map<String, Object> message1 = (Map<String, Object>) dataSnapshot.getValue();
             //리사이클러뷰에서 몇번째 게시물: upload_num
 
-            //DB상에서 num값(게시물의 총 개수)을 찾는다.
-            //      target_num = Status 밑의 num값 - 포지션 = 댓글을 달았던 Status 번호
-            //upload_num = (Integer.parseInt(message1.get("num").toString()) - upload_num);
-
-            //DB상에서 target_num 밑의 num을 찾는다.
+            //DB상에서 upload_num 밑의 num을 찾는다.
             //      target_comment에 넣는다.
             Map<String, Object> message2 = (Map<String, Object>)dataSnapshot.child(Integer.toString(upload_num)).child("comments").getValue();
-
             int target_comment = Integer.parseInt(message2.get("num").toString());
-            target_comment++;
+
             //target_comment를 1 올리고,
+            target_comment++;
+
             Map<String, Object> childUpdates1 = new HashMap<>();
             Map<String, Object> postValues = new HashMap<>();
 
@@ -410,9 +433,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addItem(Post post, int index) { posts.add(index, post); }
 
     public void comment_add(int position) {
-        Log.d("comment_num", "현재 댓글 갯수는: " + posts.get(position).comment_num);
         posts.get(position).comment_num += 1;
-        Log.d("comment_num", "추가된 뒤 댓글 갯수는: " + posts.get(position).comment_num);
     }
 
     public String restoreState() {

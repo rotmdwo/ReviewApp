@@ -160,9 +160,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
             Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(upload_num)).child("comments").getValue();
             int target_comment = Integer.parseInt(message0.get("num").toString());
-            Log.d("addto", "i는 " + target_comment + " to " + (add_comment+1));
             for(int i=target_comment; i>=add_comment+1; i--) {
-                Log.d("addto", "3");
                 Map<String, Object> message1 = (Map<String, Object>) message0.get(Integer.toString(i));
                 String date = (String) message1.get("date");
                 String id = (String) message1.get("id");
