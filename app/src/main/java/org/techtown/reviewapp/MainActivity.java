@@ -1,21 +1,14 @@
 package org.techtown.reviewapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.techtown.reviewapp.comment.Comment;
-import org.techtown.reviewapp.home.HomeActivity;
-import org.techtown.reviewapp.review.Review;
-import org.techtown.reviewapp.review.ReviewAdapter;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import org.techtown.reviewapp.home.HomeActivity;
 
 public class MainActivity extends AppCompatActivity {
 
