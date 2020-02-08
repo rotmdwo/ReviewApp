@@ -86,14 +86,31 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     ArrayList<String> photo = new ArrayList<>();
                     photo.add(picture);
 
-                    Post post = new Post();
-
                     if(picture.equals("NO")){
-                        post.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, status_num);
-                        postAdapter.addItem(post);
+                        Post status = new Post();
+                        status.setComment_num(comment_num);
+                        status.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, i);
+                        postAdapter.addItem(status);
                     } else{
-                        post.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, status_num, photo, 1);
-                        postAdapter.addItem(post);
+                        Post review = new Post();
+                        review.setComment_num(comment_num);
+                        review.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, i, photo, 1);
+                        postAdapter.addItem(review);
+                    }
+
+                    for(int j=comment_num ; j>=1 ; j--){
+                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                        date = (String) message2.get("date");
+                        id = (String) message2.get("id");
+                        text = (String) message2.get("text");
+                        user_num = Integer.parseInt(message2.get("user_num").toString());
+                        message_user = (Map<String, Object>) message0.get("user");
+                        message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                        nickname = (String) message_user2.get("nickname");
+
+                        Post comment = new Post();
+                        comment.setComment(id, nickname, date, text,2);
+                        postAdapter.addItem(comment);
                     }
 
                 }
