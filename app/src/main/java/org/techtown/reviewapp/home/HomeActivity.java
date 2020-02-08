@@ -14,11 +14,13 @@ import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
 import org.techtown.reviewapp.R;
+import org.techtown.reviewapp.Restaurants.RestaurantFragment;
 
 public class HomeActivity extends AppCompatActivity implements AutoPermissionsListener {
     ImageButton home, restaurant, rank, settings;
     HomeFragment frg_home;
     UserRankFragment frg_rank;
+    RestaurantFragment frg_restaurant;
     FragmentManager manager;
     public static Context mContext;
     @Override
@@ -37,22 +39,23 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
         settings = findViewById(R.id.setting);
 
         frg_home = new HomeFragment();
+        frg_restaurant = new RestaurantFragment();
         frg_rank = new UserRankFragment();
-        manager.beginTransaction().add(R.id.frameLayout,frg_home).add(R.id.frameLayout,frg_rank).hide(frg_rank).commit();
+        manager.beginTransaction().add(R.id.frameLayout,frg_home).add(R.id.frameLayout,frg_restaurant).hide(frg_restaurant).add(R.id.frameLayout,frg_rank).hide(frg_rank).commit();
 
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //manager.beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                manager.beginTransaction().hide(frg_rank).show(frg_home).commit();
+                manager.beginTransaction().hide(frg_rank).hide(frg_restaurant).show(frg_home).commit();
             }
         });
 
         restaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                manager.beginTransaction().hide(frg_home).hide(frg_rank).show(frg_restaurant).commit();
             }
         });
 
@@ -60,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
             @Override
             public void onClick(View v) {
                 //manager.beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                manager.beginTransaction().hide(frg_home).show(frg_rank).commit();
+                manager.beginTransaction().hide(frg_home).hide(frg_restaurant).show(frg_rank).commit();
             }
         });
 
