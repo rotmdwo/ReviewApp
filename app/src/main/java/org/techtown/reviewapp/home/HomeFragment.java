@@ -177,7 +177,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
             Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(upload_num)).child("comments").getValue();
             int target_comment = Integer.parseInt(message0.get("num").toString());
-            for(int i=target_comment; i>=add_comment+1; i--) {
+            for(int i=add_comment+1; i<=target_comment; i++) {
                 Map<String, Object> message1 = (Map<String, Object>) message0.get(Integer.toString(i));
                 String date = (String) message1.get("date");
                 String id = (String) message1.get("id");
@@ -186,9 +186,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
                 Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
                 String nickname = (String) message_user.get("nickname");
-                //message_user = (Map<String, Object>) message0.get("user");
-                //message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                //nickname = (String) message_user2.get("nickname");
 
                 postAdapter.comment_add(list_position);
                 Post comment = new Post();
