@@ -2,6 +2,7 @@ package org.techtown.reviewapp.home;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -35,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
+import org.techtown.reviewapp.post.AddPostListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,6 +47,7 @@ import java.util.Map;
 
 
 public class StatusFragment extends Fragment {
+    private AddPostListener addPostListener;
     StatusFragment statusFragment;
     EditText editText;
     TextView textView;
@@ -66,7 +69,6 @@ public class StatusFragment extends Fragment {
         statusFragment = this;
 
         editText = rootView.findViewById(R.id.editText);
-
 
         reference.addListenerForSingleValueEvent(dataListener);
         reference2.addChildEventListener(new ChildEventListener(){
@@ -146,8 +148,9 @@ public class StatusFragment extends Fragment {
                     reference.updateChildren(childUpdates1);
                     reference2.updateChildren(numUpdates);
                     ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
-
-
+                    if(addPostListener != null) {
+                        addPostListener.postAdded();
+                    }
 
                 } else if(!text.equals("")){  // 글만 썼을 때
                     Map<String, Object> childUpdates1 = new HashMap<>();
@@ -169,6 +172,9 @@ public class StatusFragment extends Fragment {
                     reference.updateChildren(childUpdates1);
                     reference2.updateChildren(numUpdates);
                     ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
+                    if(addPostListener != null) {
+                        addPostListener.postAdded();
+                    }
                 }
                 else{  // 글조차 안 썼을 때
                     Toast.makeText(((HomeActivity)HomeActivity.mContext),"내용을 입력해주세요.",Toast.LENGTH_LONG).show();
@@ -286,5 +292,11 @@ public class StatusFragment extends Fragment {
         }
     };
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof AddPostListener){
+            addPostListener= (AddPostListener) context;
+        }
+    }
 }

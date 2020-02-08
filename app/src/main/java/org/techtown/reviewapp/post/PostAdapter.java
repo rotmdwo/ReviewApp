@@ -54,7 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
 
     //data
-    private ArrayList<Post> posts = new ArrayList<>();
+    public ArrayList<Post> posts = new ArrayList<>();
 
     //etc
     static int view_num = 0;
@@ -248,7 +248,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Boolean liked = false;
 
         //Review의 요소
-        ImageView user_photos = itemView.findViewById(R.id.user_photoes);
+        ImageView user_photos;
 
         ReviewViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -264,6 +264,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             comment_upload = itemView.findViewById(R.id.comment_upload);
             like_button = itemView.findViewById(R.id.imageView);
             post_option = itemView.findViewById(R.id.post_option);
+            user_photos = itemView.findViewById(R.id.user_photoes);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
@@ -330,6 +331,20 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         private void bind(int position){
+            int photo_size = posts.get(position).photo.size();
+            for(int i = 1 ; i <= photo_size ; i++){  // 사진 여러개 쓸 때 수정
+                String file_path = posts.get(position).photo.get(i-1);
+                StorageReference ref = storage.getReference().child(file_path);
+                ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Glide.with(HomeActivity.mContext).load(task.getResult()).into(user_photos);
+                        }
+                    }
+                });
+            }
+
             Post post = posts.get(position);
             user_nickname.setText(post.getUser_nickname());
             user_rank.setText(post.getUser_rank());
@@ -370,28 +385,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 date.setText("방금 전");
             }
 
-
-
             user_text.setText(post.getUser_text());
             like.setText(Integer.toString(post.getLike()) + "명이 좋아합니다.");
             comment_num.setText(Integer.toString(post.getComment_num()));
-
-            if(posts.get(position).photo_num == 1) {
-                int photo_size = posts.get(position).photo.size();
-                for(int i = 1 ; i <= photo_size ; i++){  // 사진 여러개 쓸 때 수정
-                    String file_path = posts.get(position).photo.get(i-1);
-                    StorageReference ref = storage.getReference().child(file_path);
-                    ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if(task.isSuccessful()){
-                                Glide.with(HomeActivity.mContext).load(task.getResult()).into(user_photos);
-                            }
-                        }
-                    });
-                }
-
-            }
         }
     }
 

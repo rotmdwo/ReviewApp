@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +14,9 @@ import com.pedro.library.AutoPermissionsListener;
 
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.Restaurants.RestaurantFragment;
+import org.techtown.reviewapp.post.AddPostListener;
 
-public class HomeActivity extends AppCompatActivity implements AutoPermissionsListener {
+public class HomeActivity extends AppCompatActivity implements AutoPermissionsListener, AddPostListener {
     ImageButton home, restaurant, rank, settings;
     HomeFragment frg_home;
     UserRankFragment frg_rank;
@@ -88,5 +88,10 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
     @Override
     public void onGranted(int i, String[] strings) {
 
+    }
+
+    @Override
+    public void postAdded() {
+        frg_home.PostAdded();
     }
 }

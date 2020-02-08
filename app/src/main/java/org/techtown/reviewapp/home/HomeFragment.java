@@ -201,6 +201,72 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         }
     };
 
+    ValueEventListener dataListener3 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.getValue();
+            Map<String, Object> message_status = (Map<String, Object>) message0.get("Status");
+            status_num = Integer.parseInt(message_status.get("num").toString());
+
+            Map<String, Object> message1 = null;
+            for(int i = postAdapter.getFirst_DB_num()+1; i <= status_num; i++) {
+                message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
+                Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
+                int comment_num = Integer.parseInt(message_comment.get("num").toString());
+
+                String id = (String) message1.get("id");
+                int user_num = Integer.parseInt(message1.get("user_num").toString());
+                Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
+                Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                String nickname = (String) message_user2.get("nickname");
+                int level = Integer.parseInt(message_user2.get("level").toString());
+                String restaurant = (String) message1.get("restaurant");
+                String date = (String) message1.get("date");
+                String text = (String) message1.get("text");
+                int like = Integer.parseInt(message1.get("like").toString());
+                String picture = (String) message1.get("picture");
+                ArrayList<String> photo = new ArrayList<>();
+                photo.add(picture);
+
+                if (picture.equals("NO")) {
+                    Post status = new Post();
+                    status.setComment_num(comment_num);
+                    status.setStatus(id, nickname, date, text, 1, "레벨 " + level, restaurant, like, i);
+                    postAdapter.addItem(status, 0);
+                    postAdapter.notifyItemInserted(0);
+                } else {
+                    Post review = new Post();
+                    review.setComment_num(comment_num);
+                    review.setReview(id, nickname, date, text, 0, "레벨 " + level, restaurant, like, i, photo, 1);
+                    postAdapter.addItem(review, 0);
+                    postAdapter.notifyItemInserted(0);
+                }
+
+                for (int j = comment_num; j >= 1; j--) {
+                    Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                    date = (String) message2.get("date");
+                    id = (String) message2.get("id");
+                    text = (String) message2.get("text");
+                    user_num = Integer.parseInt(message2.get("user_num").toString());
+                    message_user = (Map<String, Object>) message0.get("user");
+                    message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                    nickname = (String) message_user2.get("nickname");
+
+                    Post comment = new Post();
+                    comment.setComment(id, nickname, date, text, 2);
+                    postAdapter.addItem(comment,1);
+                    postAdapter.notifyDataSetChanged();
+                }
+
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     @Override
     public void itemAdded(int prev_num, int position, int DB_num) {
         //DB에서
@@ -208,5 +274,9 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         list_position = position;
         upload_num = DB_num;
         reference.addListenerForSingleValueEvent(dataListener2);
+    }
+
+    public void PostAdded() {
+        reference.addListenerForSingleValueEvent(dataListener3);
     }
 }
