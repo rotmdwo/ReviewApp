@@ -236,7 +236,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView user_rank, restaurant, like, comment_num;
         EditText input_comment;
         Button comment_upload;
-        ImageView like_button;
+        ImageView like_button, post_option;
         Boolean liked = false;
 
         //Review의 요소
@@ -255,6 +255,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             input_comment = itemView.findViewById(R.id.input_comment);
             comment_upload = itemView.findViewById(R.id.comment_upload);
             like_button = itemView.findViewById(R.id.imageView);
+            post_option = itemView.findViewById(R.id.post_option);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
 
@@ -263,6 +264,22 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            });
+
+            user_nickname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    Toast.makeText(context, "어떤 사람일까요?", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            post_option.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    Toast.makeText(context, "게시물 옵션을 띄울게요", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -481,5 +498,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public String restoreState2() {
         return "2";
     }
+
+    public int getFirst_DB_num() { return posts.get(0).DB_num; }
 
 }
