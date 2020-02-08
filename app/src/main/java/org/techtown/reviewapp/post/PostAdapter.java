@@ -94,6 +94,14 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(context, "댓글을 신고해버려요!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         }
 
         private void bind(int position) {
