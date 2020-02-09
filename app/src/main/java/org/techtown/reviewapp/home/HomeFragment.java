@@ -192,6 +192,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 comment.setComment(id, nickname, date, text,2);
                 postAdapter.addItem(comment, list_position+1);
                 postAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(0);  //자동 스크롤
             }
         }
 
@@ -257,7 +258,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     postAdapter.addItem(comment,1);
                     postAdapter.notifyDataSetChanged();
                 }
-
+                recyclerView.scrollToPosition(0);  //자동 스크롤
             }
         }
 
