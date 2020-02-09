@@ -1,6 +1,6 @@
 package org.techtown.reviewapp.Restaurants;
 
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant>{
     String name;
     String picture;
     float rating;
@@ -43,5 +43,16 @@ public class Restaurant {
 
     public void setNum_of_reviews(int num_of_reviews) {
         this.num_of_reviews = num_of_reviews;
+    }
+
+    @Override
+    public int compareTo(Restaurant o) {  // 리뷰 개수 당 0.01의 가중치를 줌
+        if(rating + (float)num_of_reviews*0.01 > o.getRating() + (float) num_of_reviews*0.01){
+            return -1;
+        } else if(rating + (float)num_of_reviews*0.01 < o.getRating() + (float) num_of_reviews*0.01){
+            return 1;
+        } else{
+            return 0;
+        }
     }
 }

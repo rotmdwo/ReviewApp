@@ -29,7 +29,8 @@ public class RestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),RestaurantListActivity.class);
-                intent.putExtra("category","혼밥");
+                intent.putExtra("category_kor","혼밥");
+                intent.putExtra("category_eng","honbap");
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_not_move);
             }
@@ -40,7 +41,8 @@ public class RestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),RestaurantListActivity.class);
-                intent.putExtra("category","무한리필");
+                intent.putExtra("category_kor","무한리필");
+                intent.putExtra("category_eng","buffet");
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_not_move);
             }
@@ -51,7 +53,8 @@ public class RestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),RestaurantListActivity.class);
-                intent.putExtra("category","중식");
+                intent.putExtra("category_kor","중식");
+                intent.putExtra("category_eng","chinese");
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_not_move);
             }
