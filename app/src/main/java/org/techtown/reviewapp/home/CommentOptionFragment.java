@@ -14,12 +14,13 @@ import android.widget.TextView;
 
 import org.techtown.reviewapp.R;
 
-public class PostOptionFragment extends Fragment {
-    PostOptionFragment postOptionFragment;
+
+public class CommentOptionFragment extends Fragment {
+    CommentOptionFragment commentOptionFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
 
-    public PostOptionFragment() {
+    public CommentOptionFragment() {
         // Required empty public constructor
     }
 
@@ -27,10 +28,8 @@ public class PostOptionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_post_option, container, false);
-        postOptionFragment = this;
-        Log.d("postoption", "3");
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_comment_option, container, false);
+        commentOptionFragment = this;
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
         report = rootView.findViewById(R.id.report);
@@ -44,7 +43,7 @@ public class PostOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(postOptionFragment)
+                        .remove(commentOptionFragment)
                         .commit();
             }
         });
@@ -57,7 +56,7 @@ public class PostOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(postOptionFragment)
+                        .remove(commentOptionFragment)
                         .commit();
             }
         });
