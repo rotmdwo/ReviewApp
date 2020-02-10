@@ -29,7 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView textView,textView2;
     EditText editText, editText2;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
-    String id,password,userNum,nickname;
+    String id,password,nickname;
+    int userNum;
     Boolean isLoginChecked = false;
 
     @Override
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(temp_id.equals(id) && temp_pw.equals(password)) {
                     //유저 고유 번호 확인
-                    userNum = Integer.toString(i);
+                    userNum = i;
 
                     //아이디, 비밀번호 확인됨
                     isLoginChecked = true;
@@ -107,11 +108,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-    public void saveState(String id, String user_num,String nickname){
+    public void saveState(String id, int user_num,String nickname){
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("id",id);
-        editor.putString("user_num", user_num);
+        editor.putInt("user_num", user_num);
         editor.putString("nickname",nickname);
         editor.commit();
     }
