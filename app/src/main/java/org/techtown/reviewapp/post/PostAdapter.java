@@ -29,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.home.HomeActivity;
+import org.techtown.reviewapp.home.PostOptionFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,15 +57,17 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //data
     public ArrayList<Post> posts = new ArrayList<>();
 
-    //etc
-    static int view_num = 0;
-
     InputMethodManager imm;
 
     public ItemAddListener itemAddListener;
+    public PostOptionListener postOptionListener;
 
     public interface ItemAddListener {
         void itemAdded(int prev_num, int position, int DB_num);
+    }
+
+    public interface PostOptionListener {
+        void optionTouched(int post_num_in_DB, Boolean isWriter);
     }
 
     //생성자
@@ -288,7 +291,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    Toast.makeText(context, "게시물 옵션을 띄울게요", Toast.LENGTH_SHORT).show();
+                    if(postOptionListener != null) {
+                        postOptionListener.optionTouched(1, true);
+                    }
+
                 }
             });
 

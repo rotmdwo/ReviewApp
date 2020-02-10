@@ -27,25 +27,26 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
-public class HomeFragment extends Fragment implements PostAdapter.ItemAddListener {
+public class HomeFragment extends Fragment implements PostAdapter.ItemAddListener, PostAdapter.PostOptionListener {
     RecyclerView recyclerView;
     PostAdapter postAdapter;
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
     int list_position, add_comment, upload_num;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
+        postAdapter.postOptionListener = this;
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         recyclerView = rootView.findViewById(R.id.review_list) ;
         LinearLayoutManager manager =new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         manager.setItemPrefetchEnabled(true);  // 리사이클러뷰 정보 미리 불러오기
-        recyclerView.setLayoutManager(manager) ;
+        recyclerView.setLayoutManager(manager);
 
         reference.addListenerForSingleValueEvent(dataListener);
 
@@ -280,5 +281,10 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
     public void PostAdded() {
         reference.addListenerForSingleValueEvent(dataListener3);
+    }
+
+    @Override
+    public void optionTouched(int post_num_in_DB, Boolean isWriter) {
+        ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).add(R.id.frameLayout,new PostOptionFragment()).commit();
     }
 }
