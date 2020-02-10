@@ -1,6 +1,7 @@
 package org.techtown.reviewapp.home;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,12 +34,15 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
     int list_position, add_comment, upload_num;
+    public static HomeFragment mContext;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
+        mContext = this;
+
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
         postAdapter.postOptionListener = this;
@@ -50,11 +54,17 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         reference.addListenerForSingleValueEvent(dataListener);
 
-        ImageButton imageButton = rootView.findViewById(R.id.imageButton);
+        ImageButton imageButton = rootView.findViewById(R.id.imageButton);  // 포스트 버튼
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().add(R.id.frameLayout,new StatusFragment()).commit();
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 막기
+                    @Override
+                    public boolean canScrollVertically(){
+                        return false;
+                    }
+                });
             }
         });
 
