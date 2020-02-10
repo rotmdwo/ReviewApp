@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +35,7 @@ public class RestaurantListActivity extends AppCompatActivity {
     public static Context mContext;
     Intent intent;
     TextView textView2;
+    ProgressBar progressBar;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
 
     @Override
@@ -47,6 +49,7 @@ public class RestaurantListActivity extends AppCompatActivity {
         intent = getIntent();
         textView.setText(intent.getStringExtra("category_kor"));
         textView2 = findViewById(R.id.textView2);
+        progressBar = findViewById(R.id.progressBar);
 
         ImageView imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -86,9 +89,13 @@ public class RestaurantListActivity extends AppCompatActivity {
 
             for(int i=0;i<restaurants_num;i++){
                 adapter.addRestaurant(array[i]);
+                recyclerView.setAdapter(adapter);
             }
 
-            recyclerView.setAdapter(adapter);
+
+            textView2.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
         }
 
         @Override

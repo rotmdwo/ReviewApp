@@ -70,6 +70,18 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         }
 
         public void setItem(Restaurant restaurant) {
+            String file_path = restaurant.getPicture();
+            StorageReference ref = storage.getReference().child(file_path);
+            ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Glide.with(RestaurantListActivity.mContext).load(task.getResult()).into(circleImageView);
+                        itemView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
             float rating = restaurant.getRating();
             textView.setText(restaurant.getName());
             textView2.setText(Float.toString(rating));
@@ -98,16 +110,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
             } else{
                 imageView.setImageResource(R.drawable.star5);
             }
-            String file_path = restaurant.getPicture();
-            StorageReference ref = storage.getReference().child(file_path);
-            ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()){
-                        Glide.with(RestaurantListActivity.mContext).load(task.getResult()).into(circleImageView);
-                    }
-                }
-            });
         }
     }
 
