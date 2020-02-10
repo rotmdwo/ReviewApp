@@ -1,6 +1,8 @@
 package org.techtown.reviewapp.post;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -541,7 +543,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             //Log.d("snap", postValues.values().toString());
 
             //자기 번호를 찾아서 넣는다(DB: user_num)
-            postValues.put("user_num", ""+restoreState2());
+            postValues.put("user_num", restoreState2());
 
             //입력한 댓글 내용을 찾아서 넣는다(DB: text)
             postValues.put("text", ""+upload_text);
@@ -572,11 +574,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public String restoreState() {
-        return "bestowing";
+        SharedPreferences pref = ((HomeActivity)HomeActivity.mContext).getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        return pref.getString("id","");
     }
 
-    public String restoreState2() {
-        return "2";
+    public int restoreState2() {
+        SharedPreferences pref = ((HomeActivity)HomeActivity.mContext).getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        return pref.getInt("user_num",0);
     }
 
     public int getFirst_DB_num() { return posts.get(0).DB_num; }
