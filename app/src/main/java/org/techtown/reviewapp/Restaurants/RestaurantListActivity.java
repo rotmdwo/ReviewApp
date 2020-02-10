@@ -39,6 +39,7 @@ public class RestaurantListActivity extends AppCompatActivity {
     TextView textView2;
     ProgressBar progressBar;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
+    static int restaurants_num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,6 @@ public class RestaurantListActivity extends AppCompatActivity {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             Map<String, Object> message_Category = (Map<String, Object>) dataSnapshot.child("categories").child(intent.getStringExtra("category_eng")).getValue();
             ArrayList<String> restaurant_names = new ArrayList<>();
-            int restaurants_num = 0;
 
             for(String key : message_Category.keySet() ) {
                 if(key.equals("num")) {
@@ -115,9 +115,9 @@ public class RestaurantListActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
             }
 
-            textView2.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
+            //textView2.setVisibility(View.VISIBLE);
+            //recyclerView.setVisibility(View.VISIBLE);
+            //progressBar.setVisibility(View.INVISIBLE);
         }
 
         @Override
