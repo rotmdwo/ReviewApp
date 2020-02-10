@@ -43,7 +43,9 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         postAdapter.itemAddListener = this;
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         recyclerView = rootView.findViewById(R.id.review_list) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false)) ;
+        LinearLayoutManager manager =new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        manager.setItemPrefetchEnabled(true);  // 리사이클러뷰 정보 미리 불러오기
+        recyclerView.setLayoutManager(manager) ;
 
         reference.addListenerForSingleValueEvent(dataListener);
 

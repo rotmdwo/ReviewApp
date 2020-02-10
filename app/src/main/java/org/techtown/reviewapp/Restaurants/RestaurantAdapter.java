@@ -2,12 +2,11 @@ package org.techtown.reviewapp.Restaurants;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,10 +19,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
-import org.techtown.reviewapp.UserRank.UserRank;
-import org.techtown.reviewapp.UserRank.UserRankAdapter;
-import org.techtown.reviewapp.home.HomeActivity;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -114,7 +109,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                 }
             });
         }
-
     }
 
     public void addRestaurant(Restaurant restaurant) {

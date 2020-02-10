@@ -59,7 +59,9 @@ public class RestaurantListActivity extends AppCompatActivity {
 
         adapter = new RestaurantAdapter(this);  // 생성자를 만들 때 Context를 안 넘겨주면 프래그먼트 나갔다가 들어올 때 마다 리사이클러뷰에 중복으로 쌓이는 버그 생김
         recyclerView = findViewById(R.id.recyclerView) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)) ;
+        LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        manager.setItemPrefetchEnabled(true);
+        recyclerView.setLayoutManager(manager) ;
         reference.addListenerForSingleValueEvent(dataListener);
     }
 
