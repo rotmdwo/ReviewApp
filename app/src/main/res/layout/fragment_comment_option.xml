@@ -67,9 +67,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:textColor="#211E1E"
                     android:gravity="center"
-                    android:text="게시물 신고"
+                    android:text="댓글 신고"
+                    android:textColor="#211E1E"
                     android:textSize="18sp" />
             </LinearLayout>
 

@@ -68,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface PostOptionListener {
         void optionTouched(int post_num_in_DB, Boolean isWriter);
+        void commentTouched(int comment_num_in_DB, Boolean isWriter);
     }
 
     //생성자
@@ -101,7 +102,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Toast.makeText(context, "댓글을 신고해버려요!", Toast.LENGTH_SHORT).show();
+                    if(postOptionListener != null) {
+                        postOptionListener.commentTouched(1, true);
+
+                    }
                     return false;
                 }
             });

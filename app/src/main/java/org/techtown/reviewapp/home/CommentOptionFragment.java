@@ -9,18 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.techtown.reviewapp.R;
 
-public class PostOptionFragment extends Fragment {
-    PostOptionFragment postOptionFragment;
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class CommentOptionFragment extends Fragment {
+    CommentOptionFragment commentOptionFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
 
-    public PostOptionFragment() {
+    public CommentOptionFragment() {
         // Required empty public constructor
     }
 
@@ -28,9 +30,8 @@ public class PostOptionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_post_option, container, false);
-        postOptionFragment = this;
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_comment_option, container, false);
+        commentOptionFragment = this;
         Log.d("postoption", "3");
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
@@ -41,7 +42,7 @@ public class PostOptionFragment extends Fragment {
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(postOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(commentOptionFragment).commit();
             }
         });
 
@@ -49,7 +50,7 @@ public class PostOptionFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(postOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(commentOptionFragment).commit();
             }
         });
 

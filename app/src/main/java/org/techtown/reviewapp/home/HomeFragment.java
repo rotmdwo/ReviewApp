@@ -295,6 +295,19 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
     @Override
     public void optionTouched(int post_num_in_DB, Boolean isWriter) {
-        ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).add(R.id.frameLayout,new PostOptionFragment()).commit();
+        ((HomeActivity) HomeActivity.mContext).
+                manager.beginTransaction().
+                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).
+                add(R.id.frameLayout,new PostOptionFragment()).
+                commit();
+    }
+
+    @Override
+    public void commentTouched(int comment_num_in_DB, Boolean isWriter) {
+        ((HomeActivity) HomeActivity.mContext).
+                manager.beginTransaction().
+                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).
+                add(R.id.frameLayout,new CommentOptionFragment()).
+                commit();
     }
 }
