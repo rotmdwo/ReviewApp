@@ -25,6 +25,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -103,6 +105,12 @@ public class StatusFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
+                HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
+                    @Override
+                    public boolean canScrollVertically(){
+                        return true;
+                    }
+                });
             }
         });
 
@@ -151,7 +159,12 @@ public class StatusFragment extends Fragment {
                     if(addPostListener != null) {
                         addPostListener.postAdded();
                     }
-
+                    HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
+                        @Override
+                        public boolean canScrollVertically(){
+                            return true;
+                        }
+                    });
                 } else if(!text.equals("")){  // 글만 썼을 때
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     Map<String, Object> numUpdates = new HashMap<>();
@@ -175,6 +188,12 @@ public class StatusFragment extends Fragment {
                     if(addPostListener != null) {
                         addPostListener.postAdded();
                     }
+                    HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
+                        @Override
+                        public boolean canScrollVertically(){
+                            return true;
+                        }
+                    });
                 }
                 else{  // 글조차 안 썼을 때
                     Toast.makeText(((HomeActivity)HomeActivity.mContext),"내용을 입력해주세요.",Toast.LENGTH_LONG).show();
