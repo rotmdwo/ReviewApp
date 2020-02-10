@@ -160,7 +160,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView user_rank, restaurant, like, comment_num;
         EditText input_comment;
         Button comment_upload;
-        ImageView like_button;
+        ImageView like_button, post_option;
         Boolean liked = false;
 
         StatusViewHolder(@NonNull final View itemView) {
@@ -175,6 +175,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             comment_num = itemView.findViewById(R.id.comment_num);
             input_comment = itemView.findViewById(R.id.input_comment);
             comment_upload = itemView.findViewById(R.id.comment_upload);
+            post_option = itemView.findViewById(R.id.post_option);
             like_button = itemView.findViewById(R.id.imageView);
 
             profile_photo = itemView.findViewById(R.id.profile_photo);
@@ -184,6 +185,17 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            });
+
+            post_option.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    if(postOptionListener != null) {
+                        postOptionListener.optionTouched(1, true);
+                    }
+
                 }
             });
 

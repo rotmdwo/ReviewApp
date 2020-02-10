@@ -14,9 +14,7 @@ import android.widget.TextView;
 
 import org.techtown.reviewapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class CommentOptionFragment extends Fragment {
     CommentOptionFragment commentOptionFragment;
     FrameLayout root;
@@ -32,7 +30,6 @@ public class CommentOptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_comment_option, container, false);
         commentOptionFragment = this;
-        Log.d("postoption", "3");
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
         report = rootView.findViewById(R.id.report);
@@ -42,7 +39,12 @@ public class CommentOptionFragment extends Fragment {
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(commentOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
+                        .remove(commentOptionFragment)
+                        .commit();
             }
         });
 
@@ -50,7 +52,12 @@ public class CommentOptionFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(commentOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
+                        .remove(commentOptionFragment)
+                        .commit();
             }
         });
 

@@ -1,9 +1,7 @@
 package org.techtown.reviewapp.home;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -297,7 +295,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     public void optionTouched(int post_num_in_DB, Boolean isWriter) {
         ((HomeActivity) HomeActivity.mContext).
                 manager.beginTransaction().
-                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).
+                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
                 add(R.id.frameLayout,new PostOptionFragment()).
                 commit();
     }
@@ -306,7 +304,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     public void commentTouched(int comment_num_in_DB, Boolean isWriter) {
         ((HomeActivity) HomeActivity.mContext).
                 manager.beginTransaction().
-                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top).
+                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
                 add(R.id.frameLayout,new CommentOptionFragment()).
                 commit();
     }

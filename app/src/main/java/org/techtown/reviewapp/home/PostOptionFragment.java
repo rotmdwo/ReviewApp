@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -41,7 +40,12 @@ public class PostOptionFragment extends Fragment {
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(postOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
+                        .remove(postOptionFragment)
+                        .commit();
             }
         });
 
@@ -49,7 +53,12 @@ public class PostOptionFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(postOptionFragment).commit();
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
+                        .remove(postOptionFragment)
+                        .commit();
             }
         });
 
