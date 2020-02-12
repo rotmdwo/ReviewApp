@@ -38,7 +38,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
     Query query = reference.child("Status").limitToLast(11);
 
-    int list_position, add_comment, upload_num;
+    int list_position, add_comment;
+    String upload_num;
     public static HomeFragment mContext;
 
 
@@ -92,23 +93,23 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 Map<String, Object> message1 = (Map<String, Object>) snapshot.getValue();
                 final Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments"); //댓글 정보
 
-                final Map<String, Object> finalMessage = message1;
+                String id = (String) message1.get("id");
+                int user_num = Integer.parseInt(message1.get("user_num").toString());
+                String restaurant = (String) message1.get("restaurant");
+                String date = (String) message1.get("date");
+                String text = (String) message1.get("text");
+                int like = Integer.parseInt(message1.get("like").toString());
+                String picture = (String) message1.get("picture");
 
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d("shit", "안에: " + DB_key);
                         int comment_num = Integer.parseInt(message_comment.get("num").toString());
-                        String id = (String) finalMessage.get("id");
-                        int user_num = Integer.parseInt(finalMessage.get("user_num").toString());
-                        Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").getValue();
-                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                        String nickname = (String) message_user2.get("nickname");
-                        int level = Integer.parseInt(message_user2.get("level").toString());
-                        String restaurant = (String) finalMessage.get("restaurant");
-                        String date = (String) finalMessage.get("date");
-                        String text = (String) finalMessage.get("text");
-                        int like = Integer.parseInt(finalMessage.get("like").toString());
-                        String picture = (String) finalMessage.get("picture");
+                        Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
+                        String nickname = (String) message_user.get("nickname");
+                        int level = Integer.parseInt(message_user.get("level").toString());
+
                         ArrayList<String> photo = new ArrayList<>();
                         photo.add(picture);
 
@@ -128,13 +129,12 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
                         for (int j = comment_num; j >= 1; j--) {
                             Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                            date = (String) message2.get("date");
-                            id = (String) message2.get("id");
-                            text = (String) message2.get("text");
-                            user_num = Integer.parseInt(message2.get("user_num").toString());
-                            message_user = (Map<String, Object>) dataSnapshot.child("user").getValue();
-                            message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                            nickname = (String) message_user2.get("nickname");
+                            String date = (String) message2.get("date");
+                            String id = (String) message2.get("id");
+                            String text = (String) message2.get("text");
+                            int user_num = Integer.parseInt(message2.get("user_num").toString());
+                            message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
+                            nickname = (String) message_user.get("nickname");
 
                             Post comment = new Post();
                             comment.setComment(id, nickname, date, text, 2);
@@ -162,7 +162,11 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(upload_num)).child("comments").getValue();
+            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot
+                    .child("Status")
+                    .child(upload_num)
+                    .child("comments").getValue();
+
             int target_comment = Integer.parseInt(message0.get("num").toString());
             for(int i=add_comment+1; i<=target_comment; i++) {
                 Map<String, Object> message1 = (Map<String, Object>) message0.get(Integer.toString(i));
@@ -254,11 +258,10 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
      */
 
     @Override
-    public void itemAdded(int prev_num, int position, int DB_num) {
-        //DB에서
-        add_comment = prev_num;
-        list_position = position;
-        upload_num = DB_num;
+    public void itemAdded(int prev_num, int position, String DB_num) {
+        add_comment = prev_num; //어디다가 추가할지
+        list_position = position; //
+        upload_num = DB_num; //디비에서 몇번인가
         reference.addListenerForSingleValueEvent(dataListener2);
     }
 
