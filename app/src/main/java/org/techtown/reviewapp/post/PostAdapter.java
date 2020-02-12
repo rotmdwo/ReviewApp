@@ -37,7 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -283,6 +285,37 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
+            // Like 버튼 이미지 바인딩
+            final int DB_num = post.getDB_num();
+            DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+            reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    int like_num = Integer.parseInt(message_i.get("like").toString());
+                    Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
+                    for(int i=1; i<=like_num;i++){
+                        if(((String)message_who_liked.get(Integer.toString(i))).equals(restoreState())){
+                            liked = true;
+                            break;
+                        }
+                    }
+
+                    if(liked == false){
+                        like_button.setImageResource(R.drawable.no_like);
+                    } else{
+                        like_button.setImageResource(R.drawable.like);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+
             Date date1 = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
             String current_date = format.format(date1);
@@ -409,24 +442,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
-            like_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(liked == false){
-                        like_button.setImageResource(R.drawable.like);
-                        Toast.makeText(context, "좋아요!", Toast.LENGTH_SHORT).show();
-                        liked = true;
-                    } else{
-                        like_button.setImageResource(R.drawable.no_like);
-                        Toast.makeText(context, "좋아요 취소해요..", Toast.LENGTH_SHORT).show();
-                        liked = false;
-                    }
 
-                }
-            });
         }
 
-        private void bind(int position){
+        private void bind(final int position){
             int photo_size = posts.get(position).photo.size();
             for(int i = 1 ; i <= photo_size ; i++){  // 사진 여러개 쓸 때 수정
                 String file_path = posts.get(position).photo.get(i-1);
@@ -439,22 +458,114 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                     }
                 });
-
-                // 프로필 사진 적용
-                Post post = posts.get(position);
-                String file_path1 = "SKKU/profile_picture/profile_picture_" + post.getUser_id();
-                StorageReference ref1 = storage.getReference().child(file_path1);
-                ref1.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()){
-                            Glide.with(HomeActivity.mContext).load(task.getResult()).into(profile_photo);
-                        }
-                    }
-                });
             }
 
+            // 프로필 사진 적용
             Post post = posts.get(position);
+            String file_path1 = "SKKU/profile_picture/profile_picture_" + post.getUser_id();
+            StorageReference ref1 = storage.getReference().child(file_path1);
+            ref1.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Glide.with(HomeActivity.mContext).load(task.getResult()).into(profile_photo);
+                    }
+                }
+            });
+
+            // Like 버튼 이미지 바인딩
+            final int DB_num = post.getDB_num();
+            DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+            reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                    if(like_num >= 1){
+                        Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
+                        Set<String> keySet = message_who_liked.keySet();
+                        Iterator<String> iterator = keySet.iterator();
+                        while(iterator.hasNext()){
+                            String id = iterator.next();
+                            if(id.equals(restoreState())){
+                                liked = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(liked == false){
+                        like_button.setImageResource(R.drawable.no_like);
+                    } else{
+                        like_button.setImageResource(R.drawable.like);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+            // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
+            like_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(liked == false){
+                        like_button.setImageResource(R.drawable.like);
+                        Toast.makeText(context, "좋아요!", Toast.LENGTH_SHORT).show();
+                        liked = true;
+
+                        DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+                        reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                                // 좋아요 +1 업데이트
+                                Post temp = posts.get(position);
+                                temp.setLike(like_num+1);
+                                setItem(temp,position);
+                                like.setText(temp.getLike()+"명이 좋아합니다.");
+
+                                Map<String, Object> childUpdates1 = new HashMap<>();
+                                Map<String, Object> childUpdates2 = new HashMap<>();
+                                Map<String, Object> postValues = new HashMap<>();
+
+                                childUpdates1.put("like",temp.getLike());
+                                postValues.put("date", ""+format.format(time));
+
+                                //자기 아이디를 찾아서 넣는다(DB: id).
+                                postValues.put("id", ""+restoreState());
+                                //Log.d("snap", postValues.values().toString());
+
+                                //자기 번호를 찾아서 넣는다(DB: user_num)
+                                postValues.put("user_num", restoreState2());
+
+                                //입력한 댓글 내용을 찾아서 넣는다(DB: text)
+                                postValues.put("text", ""+upload_text);
+
+                                childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
+                                childUpdates1.put(upload_num + "/comments/num", target_comment);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else{
+                        like_button.setImageResource(R.drawable.no_like);
+                        Toast.makeText(context, "좋아요 취소해요..", Toast.LENGTH_SHORT).show();
+                        liked = false;
+                    }
+
+                }
+            });
+
             user_nickname.setText(post.getUser_nickname());
             user_rank.setText(post.getUser_rank());
             if(post.getRestaurant().equals("NO")){
@@ -602,6 +713,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     };
 
+    public void setItem(Post post,int index){
+        posts.set(index,post);
+    }
     public void addItem(Post post) {
         posts.add(post);
     }

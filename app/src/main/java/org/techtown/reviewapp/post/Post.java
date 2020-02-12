@@ -103,4 +103,16 @@ public class Post {
     public void setComment_num(int comment_num) {
         this.comment_num = comment_num;
     }
+
+    public int getDB_num() {
+        return DB_num;
+    }
+
+    public void setDB_num(int DB_num) {
+        this.DB_num = DB_num;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
 }
