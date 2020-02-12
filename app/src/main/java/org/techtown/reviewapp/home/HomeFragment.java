@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
         mContext = this;
-        query.addValueEventListener(dataListener);
+        reference.addValueEventListener(dataListener);
 
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
@@ -85,70 +85,82 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     ValueEventListener dataListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                if (snapshot.getKey().equals("num")) {
-                    continue;
-                }
-                final String DB_key = snapshot.getKey();
-                Map<String, Object> message1 = (Map<String, Object>) snapshot.getValue();
-                final Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments"); //댓글 정보
+            //먼저 유저 정보를 dataSnapshot2에 담음
+            final DataSnapshot dataSnapshot2 = dataSnapshot.child("user");
+            //쿼리문: status에서 최근 10개 게시물을 불러옴
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //최근 10개 게시물에 대해 반복
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        //게시물의 키값
+                        String DB_key = snapshot.getKey();
 
-                String id = (String) message1.get("id");
-                int user_num = Integer.parseInt(message1.get("user_num").toString());
-                String restaurant = (String) message1.get("restaurant");
-                String date = (String) message1.get("date");
-                String text = (String) message1.get("text");
-                int like = Integer.parseInt(message1.get("like").toString());
-                String picture = (String) message1.get("picture");
-
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d("shit", "안에: " + DB_key);
-                        int comment_num = Integer.parseInt(message_comment.get("num").toString());
-                        Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
-                        String nickname = (String) message_user.get("nickname");
-                        int level = Integer.parseInt(message_user.get("level").toString());
-
+                        //게시물에 대한 정보: message_post
+                        //id, date, like, picture, restaurant, text, user_num
+                        Map<String, Object> message_post = (Map<String, Object>) snapshot.getValue();
+                        String id = (String) message_post.get("id");
+                        String date = (String) message_post.get("date");
+                        int like = Integer.parseInt(message_post.get("like").toString());
+                        String picture = (String) message_post.get("picture");
+                        String restaurant = (String) message_post.get("restaurant");
+                        String text = (String) message_post.get("text");
+                        String user_num = message_post.get("user_num").toString();
+                        //사진이 여러개일 때를 대비하여 ArrayList 선언
                         ArrayList<String> photo = new ArrayList<>();
                         photo.add(picture);
 
+                        //게시물 밑의 댓글에 대한 정보: message_comment
+                        Map<String, Object> message_comment = (Map<String, Object>) snapshot.child("comments").getValue();
+                        int comment_num = Integer.parseInt(message_comment.get("num").toString());
+
+                        //게시물을 작성한 유저에 대한 정보: message_user
+                        //nickname, level
+                        //현재 user_num으로 찾음
+                        //(주: 굳이 user_num으로 찾을 필요가 없음, id는 유니크하기 때문에 구조를 바꿀 필요가 있을듯)
+                        Map<String, Object> message_user = (Map<String, Object>) dataSnapshot2.child(user_num).getValue();
+                        String nickname = (String) message_user.get("nickname");
+                        int level = Integer.parseInt(message_user.get("level").toString());
+
+
+                        //받아온 정보를 바탕으로 새로운 Post를 만듬
                         if (picture.equals("NO")) {
                             Post status = new Post();
                             status.setComment_num(comment_num);
                             status.setStatus(id, nickname, date, text, 1, "레벨 " + level, restaurant, like, DB_key);
-                            Log.d("debug", status.getUser_text());
                             postAdapter.addItem(status);
                         } else {
                             Post review = new Post();
                             review.setComment_num(comment_num);
                             review.setReview(id, nickname, date, text, 0, "레벨 " + level, restaurant, like, DB_key, photo, 1);
-                            Log.d("debug", review.getUser_text());
                             postAdapter.addItem(review);
                         }
 
-                        for (int j = comment_num; j >= 1; j--) {
-                            Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                            String date = (String) message2.get("date");
-                            String id = (String) message2.get("id");
-                            String text = (String) message2.get("text");
-                            int user_num = Integer.parseInt(message2.get("user_num").toString());
-                            message_user = (Map<String, Object>) dataSnapshot.child("user").child(Integer.toString(user_num)).getValue();
-                            nickname = (String) message_user.get("nickname");
+                        for(String key : message_comment.keySet()) {
+                            if(key.equals("num")) {
+                                continue;
+                            }
+                            Map<String, Object> message_comment2 = (Map<String, Object>) snapshot.child("comments").child(key).getValue();
+                            date = (String) message_comment2.get("date");
+                            id = (String) message_comment2.get("id");
+                            text = (String) message_comment2.get("text");
+                            user_num = message_comment2.get("user_num").toString();
+                            Map<String, Object> message_user2 = (Map<String, Object>) dataSnapshot2.child(user_num).getValue();
+                            nickname = (String) message_user2.get("nickname");
 
                             Post comment = new Post();
                             comment.setComment(id, nickname, date, text, 2);
                             postAdapter.addItem(comment);
                         }
                     }
+                    recyclerView.setAdapter(postAdapter);
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-            }
-            recyclerView.setAdapter(postAdapter);
+                }
+            });
         }
 
 
@@ -157,7 +169,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         }
     };
-
+    /*
     ValueEventListener dataListener2 = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -191,6 +203,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         }
     };
+
+     */
     /*
     ValueEventListener dataListener3 = new ValueEventListener() {
         @Override
@@ -262,7 +276,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         add_comment = prev_num; //어디다가 추가할지
         list_position = position; //
         upload_num = DB_num; //디비에서 몇번인가
-        reference.addListenerForSingleValueEvent(dataListener2);
+        //reference.addListenerForSingleValueEvent(dataListener2);
     }
 
     public void PostAdded() {

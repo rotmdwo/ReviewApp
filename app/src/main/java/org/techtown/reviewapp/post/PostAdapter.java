@@ -50,8 +50,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //DB
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
-    int upload_num, upload_pos, commentNum;
-    String upload_text;
+    int upload_pos, commentNum;
+    String upload_text, upload_num;
 
     //viewType
     public int REVIEW = 0; //사진 있는 리뷰
@@ -70,7 +70,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public PostOptionListener postOptionListener;
 
     public interface ItemAddListener {
-        void itemAdded(int prev_num, int position, int DB_num);
+        void itemAdded(int prev_num, int position, String DB_num);
     }
 
     public interface PostOptionListener {
@@ -232,7 +232,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        //upload_num = posts.get(pos).DB_num;
+                        upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
@@ -272,13 +272,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             // Like 버튼 이미지 바인딩
-            final int DB_num = post.getDB_num();
+            final String DB_num = post.getDB_num();
+            /*
             DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
             reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                     int like_num = Integer.parseInt(message_i.get("like").toString());
                     Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
                     for(int i=1; i<=like_num;i++){
@@ -299,6 +299,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
+             */
 
             // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
             like_button.setOnClickListener(new View.OnClickListener() {
@@ -314,7 +315,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 +1 업데이트
@@ -350,7 +351,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 -1 업데이트
@@ -490,7 +491,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        //upload_num = posts.get(pos).DB_num;
+                        upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
@@ -537,13 +538,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             // Like 버튼 이미지 바인딩
-            final int DB_num = post.getDB_num();
+            final String DB_num = post.getDB_num();
             DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
             reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                     int like_num = Integer.parseInt(message_i.get("like").toString());
 
                     if(like_num >= 1){
@@ -586,7 +587,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 +1 업데이트
@@ -622,7 +623,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 -1 업데이트
@@ -758,11 +759,11 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             //DB상에서 upload_num 밑의 num을 찾는다.
             //      target_comment에 넣는다.
-            Map<String, Object> message2 = (Map<String, Object>)dataSnapshot.child(Integer.toString(upload_num)).child("comments").getValue();
-            int target_comment = Integer.parseInt(message2.get("num").toString());
+            //Map<String, Object> message2 = (Map<String, Object>)dataSnapshot.child(Integer.toString(upload_num)).child("comments").getValue();
+            //int target_comment = Integer.parseInt(message2.get("num").toString());
 
             //target_comment를 1 올리고,
-            target_comment++;
+            //target_comment++;
 
             Map<String, Object> childUpdates1 = new HashMap<>();
             Map<String, Object> postValues = new HashMap<>();
@@ -783,8 +784,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             //입력한 댓글 내용을 찾아서 넣는다(DB: text)
             postValues.put("text", ""+upload_text);
 
-            childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
-            childUpdates1.put(upload_num + "/comments/num", target_comment);
+            //childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
+            //childUpdates1.put(upload_num + "/comments/num", target_comment);
             reference.updateChildren(childUpdates1);
 
             if(itemAddListener!=null) {

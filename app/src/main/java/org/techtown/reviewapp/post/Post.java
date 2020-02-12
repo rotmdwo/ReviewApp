@@ -104,11 +104,11 @@ public class Post {
         this.comment_num = comment_num;
     }
 
-    public int getDB_num() {
+    public String getDB_num() {
         return DB_num;
     }
 
-    public void setDB_num(int DB_num) {
+    public void setDB_num(String DB_num) {
         this.DB_num = DB_num;
     }
 
