@@ -17,6 +17,7 @@
         <activity android:name=".Login_SignUp.SignUpActivity" />
         <activity android:name=".Login_SignUp.LoginActivity"></activity>
         <activity android:name=".Restaurants.RestaurantListActivity" />
+        <activity android:name=".Restaurants.RestaurantActivity"/>
         <activity android:name=".home.HomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
