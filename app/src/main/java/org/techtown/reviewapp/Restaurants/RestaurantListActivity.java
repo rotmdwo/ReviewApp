@@ -73,7 +73,11 @@ public class RestaurantListActivity extends AppCompatActivity {
     ValueEventListener dataListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Map<String, Object> message_Category = (Map<String, Object>) dataSnapshot.child("categories").child(intent.getStringExtra("category_eng")).getValue();
+            Map<String, Object> message_Category =
+                    (Map<String, Object>) dataSnapshot
+                            .child("categories")
+                            .child(intent.getStringExtra("category_eng"))
+                            .getValue();
             ArrayList<String> restaurant_names = new ArrayList<>();
             int restaurants_num = 0;
 
@@ -85,10 +89,6 @@ public class RestaurantListActivity extends AppCompatActivity {
                 }
             }
 
-            //Map<String, Object> message_SKKU = (Map<String, Object>) dataSnapshot.getValue();
-            //Map<String, Object> message_Restaurants = (Map<String, Object>) message_SKKU.get("Restaurants");
-            //Map<String, Object> message_Category = (Map<String, Object>) message_Restaurants.get(intent.getStringExtra("category_eng"));
-            //int restaurants_num = Integer.parseInt(message_Category.get("num").toString());
             textView2.setText(restaurants_num+"개의 검색결과");
             Restaurant[] array = new Restaurant[restaurants_num];
             for(int i=0 ; i < restaurants_num ; i++) {
@@ -103,11 +103,6 @@ public class RestaurantListActivity extends AppCompatActivity {
                         Float.parseFloat(message_Restaurants.get("rating").toString()),
                         Integer.parseInt(message_Restaurants.get("num_of_reviews").toString()));
             }
-
-            Log.d("debug1", "이름: " + array[0].getName());
-            Log.d("debug1", "사진: " + array[0].getPicture());
-            Log.d("debug1", "리뷰 수: " + array[0].getNum_of_reviews());
-            Log.d("debug1", "평점: " + array[0].getRating());
 
             Arrays.sort(array);
             for(int i=0;i<restaurants_num;i++){
