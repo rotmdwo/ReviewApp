@@ -9,9 +9,9 @@ public class Post {
     int type;
 
     //Review, Status 공통 요소
-    String user_rank, restaurant;
+    String user_rank, restaurant, DB_num;
     int like = 0;
-    int comment_num, DB_num;
+    int comment_num;
 
     //Review 요소
     ArrayList<String> photo = null;
@@ -19,7 +19,7 @@ public class Post {
 
     //methods
     //Item이 리뷰일때 setter 메서드
-    public void setReview(String user_id, String user_nickname, String date, String user_text, int type, String user_rank, String restaurant, int like, int DB_num, ArrayList<String> photo, int photo_num) {
+    public void setReview(String user_id, String user_nickname, String date, String user_text, int type, String user_rank, String restaurant, int like, String DB_num, ArrayList<String> photo, int photo_num) {
         this.user_id = user_id;
         this.user_nickname = user_nickname;
         this.date = date;
@@ -34,7 +34,7 @@ public class Post {
     }
 
     //Item이 Status일때 setter 메서드
-    public void setStatus(String user_id, String user_nickname, String date, String user_text, int type, String user_rank, String restaurant, int like, int DB_num) {
+    public void setStatus(String user_id, String user_nickname, String date, String user_text, int type, String user_rank, String restaurant, int like, String DB_num) {
         this.user_id = user_id;
         this.user_nickname = user_nickname;
         this.date = date;

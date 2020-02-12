@@ -229,7 +229,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        upload_num = posts.get(pos).DB_num;
+                        //upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
@@ -394,7 +394,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        upload_num = posts.get(pos).DB_num;
+                        //upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
@@ -622,6 +622,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return pref.getInt("user_num",0);
     }
 
-    public int getFirst_DB_num() { return posts.get(0).DB_num; }
+    //public int getFirst_DB_num() { return posts.get(0).DB_num; }
 
 }

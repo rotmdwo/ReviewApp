@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.techtown.reviewapp.R;
@@ -25,6 +26,8 @@ import org.techtown.reviewapp.post.Post;
 import org.techtown.reviewapp.post.PostAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -33,6 +36,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     PostAdapter postAdapter;
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
+    Query query = reference.child("Status").limitToLast(11);
+
     int list_position, add_comment, upload_num;
     public static HomeFragment mContext;
 
@@ -42,6 +47,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
         mContext = this;
+        query.addValueEventListener(dataListener);
 
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
@@ -51,8 +57,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         LinearLayoutManager manager =new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         manager.setItemPrefetchEnabled(true);  // 리사이클러뷰 정보 미리 불러오기
         recyclerView.setLayoutManager(manager);
-
-        reference.addListenerForSingleValueEvent(dataListener);
 
         ImageButton imageButton = rootView.findViewById(R.id.imageButton);  // 포스트 버튼
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -80,109 +84,73 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     ValueEventListener dataListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Map<String, Object> message0 = (Map<String, Object>) dataSnapshot.getValue();
-            Map<String, Object> message_status = (Map<String, Object>) message0.get("Status");
-            status_num = Integer.parseInt(message_status.get("num").toString());
-
-            Map<String, Object> message1 = null;
-            if(status_num >= 10){  // 아직 미완성
-                for(int i = status_num ; i > status_num - 10 ; i--){
-                    message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
-                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
-                    int comment_num = Integer.parseInt(message_comment.get("num").toString());
-
-                    String id = (String) message1.get("id");
-                    int user_num = Integer.parseInt(message1.get("user_num").toString());
-                    Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-                    Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                    String nickname = (String) message_user2.get("nickname");
-                    int level = Integer.parseInt(message_user2.get("level").toString());
-                    String restaurant = (String) message1.get("restaurant");
-                    String date = (String) message1.get("date");
-                    String text = (String) message1.get("text");
-                    int like = Integer.parseInt(message1.get("like").toString());
-                    String picture = (String) message1.get("picture");
-                    ArrayList<String> photo = new ArrayList<>();
-                    photo.add(picture);
-
-                    if(picture.equals("NO")){
-                        Post status = new Post();
-                        status.setComment_num(comment_num);
-                        status.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, i);
-                        postAdapter.addItem(status);
-                    } else{
-                        Post review = new Post();
-                        review.setComment_num(comment_num);
-                        review.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, i, photo, 1);
-                        postAdapter.addItem(review);
-                    }
-
-                    for(int j=comment_num ; j>=1 ; j--){
-                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                        date = (String) message2.get("date");
-                        id = (String) message2.get("id");
-                        text = (String) message2.get("text");
-                        user_num = Integer.parseInt(message2.get("user_num").toString());
-                        message_user = (Map<String, Object>) message0.get("user");
-                        message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                        nickname = (String) message_user2.get("nickname");
-
-                        Post comment = new Post();
-                        comment.setComment(id, nickname, date, text,2);
-                        postAdapter.addItem(comment);
-                    }
-
+            for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                if (snapshot.getKey().equals("num")) {
+                    continue;
                 }
-            } else {
-                for(int i = status_num ; i >= 1 ; i--){
-                    message1 = (Map<String, Object>) message_status.get(Integer.toString(i)); //게시글 정보
-                    Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments"); //댓글 정보
-                    int comment_num = Integer.parseInt(message_comment.get("num").toString());
+                final String DB_key = snapshot.getKey();
+                Map<String, Object> message1 = (Map<String, Object>) snapshot.getValue();
+                final Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments"); //댓글 정보
 
-                    String id = (String) message1.get("id");
-                    int user_num = Integer.parseInt(message1.get("user_num").toString());
-                    Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
-                    Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                    String nickname = (String) message_user2.get("nickname");
-                    int level = Integer.parseInt(message_user2.get("level").toString());
-                    String restaurant = (String) message1.get("restaurant");
-                    String date = (String) message1.get("date");
-                    String text = (String) message1.get("text");
-                    int like = Integer.parseInt(message1.get("like").toString());
-                    String picture = (String) message1.get("picture");
-                    ArrayList<String> photo = new ArrayList<>();
-                    photo.add(picture);
+                final Map<String, Object> finalMessage = message1;
 
-                    if(picture.equals("NO")){
-                        Post status = new Post();
-                        status.setComment_num(comment_num);
-                        status.setStatus(id, nickname, date, text,1, "레벨 "+ level, restaurant,  like, i);
-                        postAdapter.addItem(status);
-                    } else {
-                        Post review = new Post();
-                        review.setComment_num(comment_num);
-                        review.setReview(id, nickname, date, text,0, "레벨 "+ level, restaurant,  like, i, photo, 1);
-                        postAdapter.addItem(review);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int comment_num = Integer.parseInt(message_comment.get("num").toString());
+                        String id = (String) finalMessage.get("id");
+                        int user_num = Integer.parseInt(finalMessage.get("user_num").toString());
+                        Map<String, Object> message_user = (Map<String, Object>) dataSnapshot.child("user").getValue();
+                        Map<String, Object> message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                        String nickname = (String) message_user2.get("nickname");
+                        int level = Integer.parseInt(message_user2.get("level").toString());
+                        String restaurant = (String) finalMessage.get("restaurant");
+                        String date = (String) finalMessage.get("date");
+                        String text = (String) finalMessage.get("text");
+                        int like = Integer.parseInt(finalMessage.get("like").toString());
+                        String picture = (String) finalMessage.get("picture");
+                        ArrayList<String> photo = new ArrayList<>();
+                        photo.add(picture);
+
+                        if (picture.equals("NO")) {
+                            Post status = new Post();
+                            status.setComment_num(comment_num);
+                            status.setStatus(id, nickname, date, text, 1, "레벨 " + level, restaurant, like, DB_key);
+                            Log.d("debug", status.getUser_text());
+                            postAdapter.addItem(status);
+                        } else {
+                            Post review = new Post();
+                            review.setComment_num(comment_num);
+                            review.setReview(id, nickname, date, text, 0, "레벨 " + level, restaurant, like, DB_key, photo, 1);
+                            Log.d("debug", review.getUser_text());
+                            postAdapter.addItem(review);
+                        }
+
+                        for (int j = comment_num; j >= 1; j--) {
+                            Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
+                            date = (String) message2.get("date");
+                            id = (String) message2.get("id");
+                            text = (String) message2.get("text");
+                            user_num = Integer.parseInt(message2.get("user_num").toString());
+                            message_user = (Map<String, Object>) dataSnapshot.child("user").getValue();
+                            message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
+                            nickname = (String) message_user2.get("nickname");
+
+                            Post comment = new Post();
+                            comment.setComment(id, nickname, date, text, 2);
+                            postAdapter.addItem(comment);
+                        }
                     }
 
-                    for(int j=comment_num ; j>=1 ; j--){
-                        Map<String, Object> message2 = (Map<String, Object>) message_comment.get(Integer.toString(j));
-                        date = (String) message2.get("date");
-                        id = (String) message2.get("id");
-                        text = (String) message2.get("text");
-                        user_num = Integer.parseInt(message2.get("user_num").toString());
-                        message_user = (Map<String, Object>) message0.get("user");
-                        message_user2 = (Map<String, Object>) message_user.get(Integer.toString(user_num));
-                        nickname = (String) message_user2.get("nickname");
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        Post comment = new Post();
-                        comment.setComment(id, nickname, date, text,2);
-                        postAdapter.addItem(comment);
                     }
-                }
+                });
             }
             recyclerView.setAdapter(postAdapter);
         }
+
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -219,7 +187,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         }
     };
-
+    /*
     ValueEventListener dataListener3 = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -232,7 +200,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 message1 = (Map<String, Object>) message_status.get(Integer.toString(i));
                 Map<String, Object> message_comment = (Map<String, Object>) message1.get("comments");
                 int comment_num = Integer.parseInt(message_comment.get("num").toString());
-
                 String id = (String) message1.get("id");
                 int user_num = Integer.parseInt(message1.get("user_num").toString());
                 Map<String, Object> message_user = (Map<String, Object>) message0.get("user");
@@ -252,13 +219,11 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     status.setComment_num(comment_num);
                     status.setStatus(id, nickname, date, text, 1, "레벨 " + level, restaurant, like, i);
                     postAdapter.addItem(status, 0);
-                    postAdapter.notifyItemInserted(0);
                 } else {
                     Post review = new Post();
                     review.setComment_num(comment_num);
                     review.setReview(id, nickname, date, text, 0, "레벨 " + level, restaurant, like, i, photo, 1);
                     postAdapter.addItem(review, 0);
-                    postAdapter.notifyItemInserted(0);
                 }
 
                 for (int j = comment_num; j >= 1; j--) {
@@ -274,8 +239,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     Post comment = new Post();
                     comment.setComment(id, nickname, date, text, 2);
                     postAdapter.addItem(comment,1);
-                    postAdapter.notifyDataSetChanged();
                 }
+                postAdapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(0);  //자동 스크롤
             }
         }
@@ -285,6 +250,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         }
     };
+
+     */
 
     @Override
     public void itemAdded(int prev_num, int position, int DB_num) {
@@ -296,7 +263,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     }
 
     public void PostAdded() {
-        reference.addListenerForSingleValueEvent(dataListener3);
+        //reference.addListenerForSingleValueEvent(dataListener3);
     }
 
     @Override
