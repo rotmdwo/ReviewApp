@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -82,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class CommentViewHolder extends RecyclerView.ViewHolder {
         //Review, Status, 댓글의 공통적인 요소
         TextView user_nickname, date, user_text;
-        ImageView profile_photo;
+        CircleImageView profile_photo;
 
         CommentViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -119,6 +121,18 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Post post = posts.get(position);
             user_nickname.setText(post.getUser_nickname());
             user_text.setText(post.getUser_text());
+
+            // 프로필 사진 적용
+            String file_path = "SKKU/profile_picture/profile_picture_" + post.getUser_id();
+            StorageReference ref = storage.getReference().child(file_path);
+            ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Glide.with(HomeActivity.mContext).load(task.getResult()).into(profile_photo);
+                    }
+                }
+            });
 
             Date date1 = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
@@ -256,6 +270,18 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } else{
                 restaurant.setText(post.getRestaurant());
             }
+
+            // 프로필 사진 적용
+            String file_path = "SKKU/profile_picture/profile_picture_" + post.getUser_id();
+            StorageReference ref = storage.getReference().child(file_path);
+            ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Glide.with(HomeActivity.mContext).load(task.getResult()).into(profile_photo);
+                    }
+                }
+            });
 
             Date date1 = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
@@ -410,6 +436,19 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
                             Glide.with(HomeActivity.mContext).load(task.getResult()).into(user_photos);
+                        }
+                    }
+                });
+
+                // 프로필 사진 적용
+                Post post = posts.get(position);
+                String file_path1 = "SKKU/profile_picture/profile_picture_" + post.getUser_id();
+                StorageReference ref1 = storage.getReference().child(file_path1);
+                ref1.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Glide.with(HomeActivity.mContext).load(task.getResult()).into(profile_photo);
                         }
                     }
                 });

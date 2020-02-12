@@ -16,6 +16,7 @@ import android.widget.Button;
 import org.techtown.reviewapp.Login_SignUp.LoginActivity;
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.Restaurants.RestaurantListActivity;
+import org.techtown.reviewapp.Settings.ProfilePictureChangeActivity;
 
 public class SettingFragment extends Fragment {
 
@@ -33,6 +34,15 @@ public class SettingFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        Button button2 = rootView.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ProfilePictureChangeActivity.class);
+                startActivity(intent);
             }
         });
 
