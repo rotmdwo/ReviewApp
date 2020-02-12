@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     PostAdapter postAdapter;
     int status_num;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
-    Query query = reference.child("Status").limitToLast(11);
+    Query query = reference.child("Status").limitToLast(10);
 
     int list_position, add_comment;
     String upload_num;
@@ -49,13 +49,14 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
         mContext = this;
         reference.addValueEventListener(dataListener);
-
+        //query.addValueEventListener(dataListener2);
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
         postAdapter.postOptionListener = this;
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         recyclerView = rootView.findViewById(R.id.review_list) ;
-        LinearLayoutManager manager =new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager manager =new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true);
+        manager.setStackFromEnd(true);
         manager.setItemPrefetchEnabled(true);  // 리사이클러뷰 정보 미리 불러오기
         recyclerView.setLayoutManager(manager);
 
@@ -95,6 +96,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //게시물의 키값
                         String DB_key = snapshot.getKey();
+                        Log.d("debug", DB_key);
 
                         //게시물에 대한 정보: message_post
                         //id, date, like, picture, restaurant, text, user_num
@@ -150,7 +152,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
                             Post comment = new Post();
                             comment.setComment(id, nickname, date, text, 2);
-                            postAdapter.addItem(comment);
                         }
                     }
                     recyclerView.setAdapter(postAdapter);
@@ -169,11 +170,15 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
         }
     };
-    /*
+
     ValueEventListener dataListener2 = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                Log.d("debug", snapshot.getKey());
+            }
 
+            /*
             Map<String, Object> message0 = (Map<String, Object>) dataSnapshot
                     .child("Status")
                     .child(upload_num)
@@ -196,6 +201,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 postAdapter.addItem(comment, list_position+1);
                 postAdapter.notifyDataSetChanged();
             }
+
+             */
         }
 
         @Override
@@ -204,7 +211,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         }
     };
 
-     */
     /*
     ValueEventListener dataListener3 = new ValueEventListener() {
         @Override
@@ -276,7 +282,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         add_comment = prev_num; //어디다가 추가할지
         list_position = position; //
         upload_num = DB_num; //디비에서 몇번인가
-        //reference.addListenerForSingleValueEvent(dataListener2);
+        reference.addListenerForSingleValueEvent(dataListener2);
     }
 
     public void PostAdded() {
