@@ -1,7 +1,9 @@
 package org.techtown.reviewapp.Restaurants;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,23 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
             textView3 = itemView.findViewById(R.id.textView3);
             circleImageView = itemView.findViewById(R.id.circleImageView);
             imageView = itemView.findViewById(R.id.imageView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) { //잘못된 터치가 아닐경우
+                        Intent intent = new Intent(context, RestaurantActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", items.get(pos).getName());
+                        bundle.putString("picture", items.get(pos).getPicture());
+                        bundle.putFloat("rating", items.get(pos).getRating());
+                        bundle.putInt("reviewNum", items.get(pos).getNum_of_reviews());
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
 
         public void setItem(Restaurant restaurant) {
@@ -86,6 +105,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                     }
                 }
             });
+
 
             float rating = restaurant.getRating();
             textView.setText(restaurant.getName());
