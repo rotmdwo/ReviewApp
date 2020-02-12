@@ -111,6 +111,11 @@ public class StatusFragment extends Fragment {
                         return true;
                     }
                 });
+                // 비활성화 되었던 네비게이션 버튼 재활성화
+                ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
+                ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
+                ((HomeActivity) HomeActivity.mContext).settings.setEnabled(true);
+                ((HomeActivity) HomeActivity.mContext).rank.setEnabled(true);
             }
         });
 
@@ -165,6 +170,11 @@ public class StatusFragment extends Fragment {
                             return true;
                         }
                     });
+                    // 비활성화 되었던 네비게이션 버튼 재활성화
+                    ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).settings.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).rank.setEnabled(true);
                 } else if(!text.equals("")){  // 글만 썼을 때
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     Map<String, Object> numUpdates = new HashMap<>();
@@ -194,6 +204,11 @@ public class StatusFragment extends Fragment {
                             return true;
                         }
                     });
+                    // 비활성화 되었던 네비게이션 버튼 재활성화
+                    ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).settings.setEnabled(true);
+                    ((HomeActivity) HomeActivity.mContext).rank.setEnabled(true);
                 }
                 else{  // 글조차 안 썼을 때
                     Toast.makeText(((HomeActivity)HomeActivity.mContext),"내용을 입력해주세요.",Toast.LENGTH_LONG).show();

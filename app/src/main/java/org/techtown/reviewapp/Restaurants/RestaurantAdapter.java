@@ -78,6 +78,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                     if(task.isSuccessful()){
                         Glide.with(RestaurantListActivity.mContext).load(task.getResult()).into(circleImageView);
                         itemView.setVisibility(View.VISIBLE);
+                        if(((RestaurantListActivity)RestaurantListActivity.mContext).restaurants_num == getItemCount()){  // 마지막 음식점의 사진이 불러오진 후에야 프로그레스바가 사라지고 화면이 뜬다.
+                            ((RestaurantListActivity)RestaurantListActivity.mContext).textView2.setVisibility(View.VISIBLE);
+                            ((RestaurantListActivity)RestaurantListActivity.mContext).recyclerView.setVisibility(View.VISIBLE);
+                            ((RestaurantListActivity)RestaurantListActivity.mContext).progressBar.setVisibility(View.INVISIBLE);
+                        }
                     }
                 }
             });

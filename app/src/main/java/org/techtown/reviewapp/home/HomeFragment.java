@@ -2,6 +2,7 @@ package org.techtown.reviewapp.home;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,12 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                         return false;
                     }
                 });
+
+                // Status Fragment가 떴을 때 네비게이션 버튼 비활성화
+                ((HomeActivity) HomeActivity.mContext).home.setEnabled(false);
+                ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(false);
+                ((HomeActivity) HomeActivity.mContext).settings.setEnabled(false);
+                ((HomeActivity) HomeActivity.mContext).rank.setEnabled(false);
             }
         });
 
