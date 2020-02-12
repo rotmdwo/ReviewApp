@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -246,24 +247,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
-            like_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(liked == false){
-                        like_button.setImageResource(R.drawable.like);
-                        Toast.makeText(context, "좋아요!", Toast.LENGTH_SHORT).show();
-                        liked = true;
-                    } else{
-                        like_button.setImageResource(R.drawable.no_like);
-                        Toast.makeText(context, "좋아요 취소해요..", Toast.LENGTH_SHORT).show();
-                        liked = false;
-                    }
-
-                }
-            });
         }
 
-        private void bind(int position){
+        private void bind(final int position){
             Post post = posts.get(position);
             user_nickname.setText(post.getUser_nickname());
             user_rank.setText(post.getUser_rank());
@@ -314,7 +300,84 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
+            // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
+            like_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(liked == false){
+                        like_button.setImageResource(R.drawable.like);
+                        Toast.makeText(context, "좋아요!", Toast.LENGTH_SHORT).show();
+                        liked = true;
 
+                        DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+                        reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                                // 좋아요 +1 업데이트
+                                Post temp = posts.get(position);
+                                temp.setLike(like_num+1);
+                                setItem(temp,position);
+                                like.setText(temp.getLike()+"명이 좋아합니다.");
+
+                                Map<String, Object> childUpdates1 = new HashMap<>();
+                                Map<String, Object> childUpdates2 = new HashMap<>();
+                                Map<String, Object> postValues = new HashMap<>();
+
+                                childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
+                                postValues.put(restoreState(),restoreState());
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/", postValues);
+
+                                DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+                                reference_upload.updateChildren(childUpdates1);
+                                reference_upload.updateChildren(childUpdates2);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else{
+                        like_button.setImageResource(R.drawable.no_like);
+                        Toast.makeText(context, "좋아요 취소해요..", Toast.LENGTH_SHORT).show();
+                        liked = false;
+
+                        DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+                        reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                                // 좋아요 -1 업데이트
+                                Post temp = posts.get(position);
+                                temp.setLike(like_num-1);
+                                setItem(temp,position);
+                                like.setText(temp.getLike()+"명이 좋아합니다.");
+
+                                Map<String, Object> childUpdates1 = new HashMap<>();
+                                Map<String, Object> childUpdates2 = new HashMap<>();
+
+                                childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), FieldValue.delete());  // 데이터 삭제하는 법
+
+                                DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+                                reference_upload.updateChildren(childUpdates1);
+                                reference_upload.updateChildren(childUpdates2);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                }
+            });
 
             Date date1 = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
@@ -536,21 +599,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 Map<String, Object> childUpdates2 = new HashMap<>();
                                 Map<String, Object> postValues = new HashMap<>();
 
-                                childUpdates1.put("like",temp.getLike());
-                                postValues.put("date", ""+format.format(time));
+                                childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
+                                postValues.put(restoreState(),restoreState());
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/", postValues);
 
-                                //자기 아이디를 찾아서 넣는다(DB: id).
-                                postValues.put("id", ""+restoreState());
-                                //Log.d("snap", postValues.values().toString());
-
-                                //자기 번호를 찾아서 넣는다(DB: user_num)
-                                postValues.put("user_num", restoreState2());
-
-                                //입력한 댓글 내용을 찾아서 넣는다(DB: text)
-                                postValues.put("text", ""+upload_text);
-
-                                childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
-                                childUpdates1.put(upload_num + "/comments/num", target_comment);
+                                DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+                                reference_upload.updateChildren(childUpdates1);
+                                reference_upload.updateChildren(childUpdates2);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -561,6 +616,36 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         like_button.setImageResource(R.drawable.no_like);
                         Toast.makeText(context, "좋아요 취소해요..", Toast.LENGTH_SHORT).show();
                         liked = false;
+
+                        DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+                        reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                                // 좋아요 -1 업데이트
+                                Post temp = posts.get(position);
+                                temp.setLike(like_num-1);
+                                setItem(temp,position);
+                                like.setText(temp.getLike()+"명이 좋아합니다.");
+
+                                Map<String, Object> childUpdates1 = new HashMap<>();
+                                Map<String, Object> childUpdates2 = new HashMap<>();
+
+                                childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), FieldValue.delete());  // 데이터 삭제하는 법
+
+                                DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+                                reference_upload.updateChildren(childUpdates1);
+                                reference_upload.updateChildren(childUpdates2);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                 }
