@@ -835,5 +835,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public String getFirst_DB_num() { return posts.get(0).DB_num; }
-
+    public String getLast_DB_num() {
+        return  posts.get(posts.size() - 1).getDB_num();
+    }
 }
