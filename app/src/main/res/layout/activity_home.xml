@@ -11,53 +11,71 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="50dp" >
+
+    </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:background="@color/point"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:background="#FFFFFF"
+        android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/home"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/point"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/home" />
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/line" />
 
-        <ImageButton
-            android:id="@+id/restaurant"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/point"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/restaurant" />
+        <LinearLayout
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
-        <ImageButton
-            android:id="@+id/userRank"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/point"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/rank" />
+            <ImageButton
+                android:id="@+id/home"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/home" />
 
-        <ImageButton
-            android:id="@+id/setting"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/point"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/settings" />
+            <ImageButton
+                android:id="@+id/restaurant"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/restaurant" />
 
+            <ImageButton
+                android:id="@+id/userRank"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/rank" />
+
+            <ImageButton
+                android:id="@+id/setting"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/settings" />
+
+        </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>
