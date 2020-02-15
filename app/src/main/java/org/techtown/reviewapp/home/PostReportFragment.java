@@ -16,12 +16,12 @@ import android.widget.TextView;
 
 import org.techtown.reviewapp.R;
 
-public class PostOptionFragment extends Fragment {
-    PostOptionFragment postOptionFragment;
+public class PostReportFragment extends Fragment {
+    PostReportFragment postReportFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
 
-    public PostOptionFragment() {
+    public PostReportFragment() {
         // Required empty public constructor
     }
 
@@ -30,7 +30,7 @@ public class PostOptionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_post_option, container, false);
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_post_report, container, false);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -38,7 +38,7 @@ public class PostOptionFragment extends Fragment {
             }
         }, 380);
 
-        postOptionFragment = this;
+        postReportFragment = this;
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
         report = rootView.findViewById(R.id.report);
@@ -59,7 +59,7 @@ public class PostOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(postOptionFragment)
+                        .remove(postReportFragment)
                         .commit();
             }
         });
@@ -79,7 +79,7 @@ public class PostOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(postOptionFragment)
+                        .remove(postReportFragment)
                         .commit();
             }
         });

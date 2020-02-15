@@ -28,7 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="1.5dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/line" />
+            android:background="@drawable/line"
+            android:textSize="0sp" />
 
         <LinearLayout
             android:id="@+id/bottomBar"

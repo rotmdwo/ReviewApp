@@ -75,7 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface PostOptionListener {
-        void optionTouched(int post_num_in_DB, Boolean isWriter);
+        void optionTouched(String post_num_in_DB, Boolean isWriter);
         void commentTouched(String comment_num_in_DB, Boolean isWriter);
     }
 
@@ -225,8 +225,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    int pos = getAdapterPosition();
                     if(postOptionListener != null) {
-                        postOptionListener.optionTouched(1, true);
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.optionTouched(posts.get(pos).DB_num, isWriter);
                     }
                 }
             });
@@ -492,8 +497,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    int pos = getAdapterPosition();
                     if(postOptionListener != null) {
-                        postOptionListener.optionTouched(1, true);
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.optionTouched(posts.get(pos).DB_num, isWriter);
                     }
 
                 }
