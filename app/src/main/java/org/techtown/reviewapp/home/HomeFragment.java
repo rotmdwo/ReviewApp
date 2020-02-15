@@ -1,6 +1,7 @@
 package org.techtown.reviewapp.home;
 
 
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -49,6 +51,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((HomeActivity) HomeActivity.mContext).home.setImageResource(R.drawable.home_selected);
+        //((HomeActivity) HomeActivity.mContext).home.setScaleType(ImageView.ScaleType.FIT_CENTER);
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
         mContext = this;
         reference.addValueEventListener(dataListener);
@@ -219,6 +223,8 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     postAdapter.notifyItemInserted(list_position);
                 }
             }
+            postAdapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(list_position - 1);
         }
 
         @Override
@@ -317,6 +323,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
                 add(R.id.frameLayout,new PostOptionFragment()).
                 commit();
+
     }
 
     @Override
