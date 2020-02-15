@@ -95,7 +95,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="10dp"
                         android:text="좋아요 수"
-                        android:textSize="15dp" />
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/restaurant"
@@ -128,7 +128,8 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="날짜"
-                    android:textColor="@color/sub" />
+                    android:textColor="@color/sub"
+                    android:textSize="10sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

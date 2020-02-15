@@ -135,7 +135,8 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="날짜"
-                    android:textColor="@color/sub" />
+                    android:textColor="@color/sub"
+                    android:textSize="10sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
