@@ -29,43 +29,11 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:text="수정하기"
-                    android:textColor="@color/tmpPoint"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/line"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"/>
-
-                <TextView
-                    android:id="@+id/delete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="삭제하기"
-                    android:textColor="@color/tmpPoint"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/line"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"/>
-
-                <TextView
                     android:id="@+id/report"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:text="댓글 신고"
                     android:textColor="@color/tmpPoint"

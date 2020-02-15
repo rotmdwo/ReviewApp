@@ -30,7 +30,6 @@ public class PostOptionFragment extends Fragment {
         // Inflate the layout for this fragment
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_post_option, container, false);
         postOptionFragment = this;
-        Log.d("postoption", "3");
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
         report = rootView.findViewById(R.id.report);

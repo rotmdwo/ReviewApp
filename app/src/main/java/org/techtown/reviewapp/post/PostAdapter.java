@@ -76,7 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface PostOptionListener {
         void optionTouched(int post_num_in_DB, Boolean isWriter);
-        void commentTouched(int comment_num_in_DB, Boolean isWriter);
+        void commentTouched(String comment_num_in_DB, Boolean isWriter);
     }
 
     //생성자
@@ -110,9 +110,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    int pos = getAdapterPosition();
                     if(postOptionListener != null) {
-                        postOptionListener.commentTouched(1, true);
-
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.commentTouched(posts.get(pos).getDB_num(), isWriter);
                     }
                     return false;
                 }
@@ -224,7 +228,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if(postOptionListener != null) {
                         postOptionListener.optionTouched(1, true);
                     }
-
                 }
             });
 

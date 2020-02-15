@@ -17,20 +17,19 @@ import android.widget.TextView;
 import org.techtown.reviewapp.R;
 
 
-public class CommentOptionFragment extends Fragment {
-    CommentOptionFragment commentOptionFragment;
+public class CommentReportFragment extends Fragment {
+    CommentReportFragment commentReportFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
 
-    public CommentOptionFragment() {
+    public CommentReportFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_comment_option, container, false);
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_comment_report, container, false);
         //애니메이션 끝난뒤에 화면 불투명하게 만들기
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -39,7 +38,7 @@ public class CommentOptionFragment extends Fragment {
             }
         }, 380);
 
-        commentOptionFragment = this;
+        commentReportFragment = this;
         root = rootView.findViewById(R.id.root);
         cancle = rootView.findViewById(R.id.cancle);
         report = rootView.findViewById(R.id.report);
@@ -60,7 +59,7 @@ public class CommentOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(commentOptionFragment)
+                        .remove(commentReportFragment)
                         .commit();
             }
         });
@@ -80,12 +79,11 @@ public class CommentOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
-                        .remove(commentOptionFragment)
+                        .remove(commentReportFragment)
                         .commit();
             }
         });
 
         return rootView;
     }
-
 }

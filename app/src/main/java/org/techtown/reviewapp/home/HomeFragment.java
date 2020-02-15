@@ -327,11 +327,26 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     }
 
     @Override
-    public void commentTouched(int comment_num_in_DB, Boolean isWriter) {
-        ((HomeActivity) HomeActivity.mContext).
-                manager.beginTransaction().
-                setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
-                add(R.id.frameLayout,new CommentOptionFragment()).
-                commit();
+    public void commentTouched(String comment_num_in_DB, Boolean isWriter) {
+        // Status Fragment가 떴을 때 네비게이션 버튼 비활성화
+        ((HomeActivity) HomeActivity.mContext).home.setEnabled(false);
+        ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(false);
+        ((HomeActivity) HomeActivity.mContext).settings.setEnabled(false);
+        ((HomeActivity) HomeActivity.mContext).rank.setEnabled(false);
+        //내가 쓴거였으면
+        if(isWriter) {
+            ((HomeActivity) HomeActivity.mContext).
+                    manager.beginTransaction().
+                    setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
+                    add(R.id.frameLayout,new CommentOptionFragment()).
+                    commit();
+        } else {
+            ((HomeActivity) HomeActivity.mContext).
+                    manager.beginTransaction().
+                    setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
+                    add(R.id.frameLayout,new CommentReportFragment()).
+                    commit();
+        }
+
     }
 }
