@@ -837,6 +837,12 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         posts.get(position).comment_num += 1;
     }
 
+    public void deleteAllItem(){  // 리프레쉬를 위한 어댑터 리셋
+        while(posts.size()>=1){
+            posts.remove(0);
+        }
+    }
+
     public String restoreState() {
         SharedPreferences pref = ((HomeActivity)HomeActivity.mContext).getSharedPreferences("pref", Activity.MODE_PRIVATE);
         return pref.getString("id","");

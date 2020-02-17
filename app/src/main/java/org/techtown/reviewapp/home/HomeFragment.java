@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
     Query query = reference.child("Status").limitToLast(10);
     Query query2;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     int list_position;
     long add_comment;
@@ -55,6 +57,18 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
         //((HomeActivity) HomeActivity.mContext).home.setScaleType(ImageView.ScaleType.FIT_CENTER);
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
         mContext = this;
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView.removeAllViewsInLayout();
+                postAdapter.deleteAllItem();
+                reference.addValueEventListener(dataListener);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         reference.addValueEventListener(dataListener);
         postAdapter = new PostAdapter(getContext());
         postAdapter.itemAddListener = this;
