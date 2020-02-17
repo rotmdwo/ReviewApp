@@ -156,6 +156,10 @@ public class StatusFragment extends Fragment {
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
 
+                    Map<String, Object> postValues2 = new HashMap<>();
+                    postValues2.put("temp","temp");
+                    postValues.put("who_liked",postValues2);
+
                     numUpdates.put("num",status_num+1);
                     childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
                     reference.updateChildren(childUpdates1);
@@ -189,6 +193,11 @@ public class StatusFragment extends Fragment {
                     postValues.put("restaurant","NO");
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
+
+                    Map<String, Object> postValues2 = new HashMap<>();
+                    postValues2.put("temp","temp");
+                    postValues.put("who_liked",postValues2);
+
 
                     numUpdates.put("num",status_num+1);
                     childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
