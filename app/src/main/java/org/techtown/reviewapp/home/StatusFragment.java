@@ -60,9 +60,9 @@ public class StatusFragment extends Fragment {
     Boolean pictureSelected = false;
     String file_name;
     Date date;
-    int status_num;
+    //int status_num; //status 개수가 무의미함
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
-    private DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+    //private DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +72,8 @@ public class StatusFragment extends Fragment {
 
         editText = rootView.findViewById(R.id.editText);
 
-        reference.addListenerForSingleValueEvent(dataListener);
+        //reference.addListenerForSingleValueEvent(dataListener);
+        /*
         reference2.addChildEventListener(new ChildEventListener(){
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s){
@@ -100,17 +101,21 @@ public class StatusFragment extends Fragment {
 
             }
         });
+         */
         Button button = rootView.findViewById(R.id.button); // 취소버튼
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
+                /*
                 HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
                     @Override
                     public boolean canScrollVertically(){
                         return true;
                     }
                 });
+
+                 */
                 // 비활성화 되었던 네비게이션 버튼 재활성화
                 ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
                 ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
@@ -127,8 +132,8 @@ public class StatusFragment extends Fragment {
                 String text = editText.getText().toString();
                 date = new Date();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+                SimpleDateFormat format2 = new SimpleDateFormat("yyyy"+"MM"+"dd"+"HH"+"mm"+"ss"); //status에 제목으로 들어감
                 String image_path = "SKKU/status_picture/"+format.format(date) +"_"+ restoreState();
-
                 if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 15, bytes);
@@ -143,7 +148,6 @@ public class StatusFragment extends Fragment {
 
 
                     Map<String, Object> childUpdates1 = new HashMap<>();
-                    Map<String, Object> numUpdates = new HashMap<>();
                     Map<String, Object> postValues = new HashMap<>();
                     Map<String, Object> commentValues = new HashMap<>();
                     commentValues.put("num",0);
@@ -156,24 +160,26 @@ public class StatusFragment extends Fragment {
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
 
+                    childUpdates1.put("Status/"+format2.format(date) ,postValues);
                     Map<String, Object> postValues2 = new HashMap<>();
                     postValues2.put("temp","temp");
                     postValues.put("who_liked",postValues2);
 
-                    numUpdates.put("num",status_num+1);
-                    childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
                     reference.updateChildren(childUpdates1);
-                    reference2.updateChildren(numUpdates);
+                    //reference2.updateChildren(numUpdates);
                     ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
                     if(addPostListener != null) {
                         addPostListener.postAdded();
                     }
+                    /*
                     HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
                         @Override
                         public boolean canScrollVertically(){
                             return true;
                         }
                     });
+
+                     */
                     // 비활성화 되었던 네비게이션 버튼 재활성화
                     ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
                     ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
@@ -181,7 +187,7 @@ public class StatusFragment extends Fragment {
                     ((HomeActivity) HomeActivity.mContext).rank.setEnabled(true);
                 } else if(!text.equals("")){  // 글만 썼을 때
                     Map<String, Object> childUpdates1 = new HashMap<>();
-                    Map<String, Object> numUpdates = new HashMap<>();
+                    //Map<String, Object> numUpdates = new HashMap<>();
                     Map<String, Object> postValues = new HashMap<>();
                     Map<String, Object> commentValues = new HashMap<>();
                     commentValues.put("num",0);
@@ -194,25 +200,27 @@ public class StatusFragment extends Fragment {
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
 
+                    //numUpdates.put("num",status_num+1);
+                    childUpdates1.put("Status/"+format2.format(date),postValues);
                     Map<String, Object> postValues2 = new HashMap<>();
                     postValues2.put("temp","temp");
                     postValues.put("who_liked",postValues2);
 
-
-                    numUpdates.put("num",status_num+1);
-                    childUpdates1.put("Status/"+Integer.toString(status_num+1),postValues);
                     reference.updateChildren(childUpdates1);
-                    reference2.updateChildren(numUpdates);
+                    //reference2.updateChildren(numUpdates);
                     ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
                     if(addPostListener != null) {
                         addPostListener.postAdded();
                     }
+                    /*
                     HomeFragment.mContext.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){  // 스크롤 재허용
                         @Override
                         public boolean canScrollVertically(){
                             return true;
                         }
                     });
+
+                     */
                     // 비활성화 되었던 네비게이션 버튼 재활성화
                     ((HomeActivity) HomeActivity.mContext).home.setEnabled(true);
                     ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(true);
@@ -321,6 +329,8 @@ public class StatusFragment extends Fragment {
         return pref.getInt("user_num",0);
     }
 
+    //status 개수가 무의미해서 주석처리함
+    /*
     ValueEventListener dataListener = new ValueEventListener() {  // status 개수 가져오기
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -333,7 +343,7 @@ public class StatusFragment extends Fragment {
         public void onCancelled(@NonNull DatabaseError databaseError) {
 
         }
-    };
+    };*/
 
     @Override
     public void onAttach(Context context) {

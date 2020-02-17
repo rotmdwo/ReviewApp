@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="point">#93E9BE</color>
+    <color name="tmpPoint">#0066fe</color>
+    <color name="title">#D3000000</color>
+    <color name="text">#CB000000</color>
+    <color name="sub">#4D000000</color>
 </resources>

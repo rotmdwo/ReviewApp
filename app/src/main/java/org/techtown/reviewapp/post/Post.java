@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class Post {
     //Variables
     //Review, Status, 댓글의 공통적인 요소
-    String user_id, user_nickname, date, user_text;
+    String user_id, user_nickname, date, user_text, DB_num;
     int type;
 
     //Review, Status 공통 요소
-    String user_rank, restaurant, DB_num;
+    String user_rank, restaurant;
     int like = 0;
     int comment_num;
 
@@ -47,12 +47,13 @@ public class Post {
     }
 
     //Item이 댓글일때 setter 메서드
-    public void setComment(String user_id, String user_nickname, String date, String user_text, int type) {
+    public void setComment(String user_id, String user_nickname, String date, String user_text, int type, String DB_num) {
         this.user_id = user_id;
         this.user_nickname = user_nickname;
         this.date = date;
         this.user_text = user_text;
         this.type = type;
+        this.DB_num = DB_num;
     }
 
     //getter 메서드
@@ -104,11 +105,11 @@ public class Post {
         this.comment_num = comment_num;
     }
 
-    public int getDB_num() {
+    public String getDB_num() {
         return DB_num;
     }
 
-    public void setDB_num(int DB_num) {
+    public void setDB_num(String DB_num) {
         this.DB_num = DB_num;
     }
 

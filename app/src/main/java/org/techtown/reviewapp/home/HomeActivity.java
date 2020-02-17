@@ -53,6 +53,10 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
             public void onClick(View v) {
                 //manager.beginTransaction().replace(R.id.frameLayout,frg_home).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 manager.beginTransaction().hide(frg_rank).hide(frg_restaurant).hide(frg_setting).show(frg_home).commit();
+                home.setImageResource(R.drawable.home_selected);
+                restaurant.setImageResource(R.drawable.restaurant);
+                rank.setImageResource(R.drawable.rank);
+                settings.setImageResource(R.drawable.settings);
             }
         });
 
@@ -60,14 +64,21 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
             @Override
             public void onClick(View v) {
                 manager.beginTransaction().hide(frg_home).hide(frg_rank).hide(frg_setting).show(frg_restaurant).commit();
+                home.setImageResource(R.drawable.home);
+                restaurant.setImageResource(R.drawable.restaurant_selected);
+                rank.setImageResource(R.drawable.rank);
+                settings.setImageResource(R.drawable.settings);
             }
         });
 
         rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //manager.beginTransaction().replace(R.id.frameLayout,frg_rank).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 manager.beginTransaction().hide(frg_home).hide(frg_restaurant).hide(frg_setting).show(frg_rank).commit();
+                home.setImageResource(R.drawable.home);
+                restaurant.setImageResource(R.drawable.restaurant);
+                rank.setImageResource(R.drawable.rank_selected);
+                settings.setImageResource(R.drawable.settings);
             }
         });
 
@@ -75,6 +86,10 @@ public class HomeActivity extends AppCompatActivity implements AutoPermissionsLi
             @Override
             public void onClick(View v) {
                 manager.beginTransaction().hide(frg_home).hide(frg_restaurant).hide(frg_rank).show(frg_setting).commit();
+                home.setImageResource(R.drawable.home);
+                restaurant.setImageResource(R.drawable.restaurant);
+                rank.setImageResource(R.drawable.rank);
+                settings.setImageResource(R.drawable.settings_selected);
             }
         });
     }

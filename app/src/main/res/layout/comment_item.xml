@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -15,17 +16,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_photo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_person_black_24dp"
                 app:civ_border_color="#FFFFFFFF"
-                app:civ_circle_background_color="#FFFFFF"
-                app:civ_border_width="0dp" />
+                app:civ_border_width="0dp"
+                app:civ_circle_background_color="#FFFFFF" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,6 +45,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:text="닉네임"
+                        android:textColor="@color/title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -52,7 +54,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:text="내용" />
+                        android:text="내용"
+                        android:textColor="@color/text" />
 
                 </LinearLayout>
 
@@ -63,7 +66,9 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
-                    android:text="시간" />
+                    android:text="시간"
+                    android:textColor="@color/sub"
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
 

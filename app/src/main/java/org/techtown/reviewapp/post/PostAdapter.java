@@ -50,8 +50,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //DB
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
-    int upload_num, upload_pos, commentNum;
-    String upload_text;
+    int upload_pos, commentNum;
+    String upload_text, upload_num;
+    long lastComment_in_DB;
 
     //viewType
     public int REVIEW = 0; //사진 있는 리뷰
@@ -70,12 +71,12 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public PostOptionListener postOptionListener;
 
     public interface ItemAddListener {
-        void itemAdded(int prev_num, int position, int DB_num);
+        void itemAdded(long prev_num, int position, String DB_num);
     }
 
     public interface PostOptionListener {
-        void optionTouched(int post_num_in_DB, Boolean isWriter);
-        void commentTouched(int comment_num_in_DB, Boolean isWriter);
+        void optionTouched(String post_num_in_DB, Boolean isWriter);
+        void commentTouched(String comment_num_in_DB, Boolean isWriter);
     }
 
     //생성자
@@ -109,9 +110,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    int pos = getAdapterPosition();
                     if(postOptionListener != null) {
-                        postOptionListener.commentTouched(1, true);
-
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.commentTouched(posts.get(pos).getDB_num(), isWriter);
                     }
                     return false;
                 }
@@ -212,6 +217,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    Log.d("debug", getAdapterPosition()+ "");
                 }
             });
 
@@ -219,10 +225,15 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    int pos = getAdapterPosition();
+                    post_option.setImageResource(R.drawable.option_selected);
                     if(postOptionListener != null) {
-                        postOptionListener.optionTouched(1, true);
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.optionTouched(posts.get(pos).DB_num, isWriter);
                     }
-
                 }
             });
 
@@ -232,10 +243,18 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        //upload_num = posts.get(pos).DB_num;
+                        upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
+                        //자기 자신에 댓글이 1이상인지 본다.
+                        //  1이상이면 lastComment_in_DB에 가장 최근에 쓴 댓글의 DB_num을 넘겨줘야해
+                        //  아니면 그냥 -1을 넘긴다.
+                        if(posts.get(pos).comment_num >= 1) {
+                            lastComment_in_DB = Long.parseLong(posts.get(pos - 1).getDB_num());
+                        } else {
+                            lastComment_in_DB = -1;
+                        }
                         if(upload_text.equals("")) {
                             Toast.makeText(context, "최소한 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
                             return;
@@ -272,13 +291,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             // Like 버튼 이미지 바인딩
-            final int DB_num = post.getDB_num();
+            final String DB_num = post.getDB_num();
+            /*
             DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
             reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                     int like_num = Integer.parseInt(message_i.get("like").toString());
                     Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
                     for(int i=1; i<=like_num;i++){
@@ -299,6 +318,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
+             */
 
             // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
             like_button.setOnClickListener(new View.OnClickListener() {
@@ -314,7 +334,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 +1 업데이트
@@ -350,7 +370,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 -1 업데이트
@@ -462,6 +482,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    Log.d("debug", getAdapterPosition()+ "");
                 }
             });
 
@@ -477,8 +498,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    int pos = getAdapterPosition();
                     if(postOptionListener != null) {
-                        postOptionListener.optionTouched(1, true);
+                        boolean isWriter = false;
+                        if(restoreState().equals(posts.get(pos).user_id)) {
+                            isWriter = true;
+                        }
+                        postOptionListener.optionTouched(posts.get(pos).DB_num, isWriter);
                     }
 
                 }
@@ -490,10 +516,18 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION) {
                         imm.hideSoftInputFromWindow(input_comment.getWindowToken(), 0);
-                        //upload_num = posts.get(pos).DB_num;
+                        upload_num = posts.get(pos).DB_num;
                         upload_text = input_comment.getText().toString();
                         upload_pos = pos;
                         commentNum = posts.get(pos).getComment_num();
+                        //자기 자신에 댓글이 1이상인지 본다.
+                        //  1이상이면 lastComment_in_DB에 가장 최근에 쓴 댓글의 DB_num을 넘겨줘야해
+                        //  아니면 그냥 -1을 넘긴다.
+                        if(posts.get(pos).comment_num >= 1) {
+                            lastComment_in_DB = Long.parseLong(posts.get(pos - 1).getDB_num());
+                        } else {
+                            lastComment_in_DB = -1;
+                        }
                         if(upload_text.equals("")) {
                             Toast.makeText(context, "최소한 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
                             return;
@@ -537,13 +571,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
             // Like 버튼 이미지 바인딩
-            final int DB_num = post.getDB_num();
+            final String DB_num = post.getDB_num();
             DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
             reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                     int like_num = Integer.parseInt(message_i.get("like").toString());
 
                     if(like_num >= 1){
@@ -586,7 +620,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 +1 업데이트
@@ -622,7 +656,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(Integer.toString(DB_num)).getValue();
+                                Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                                 int like_num = Integer.parseInt(message_i.get("like").toString());
 
                                 // 좋아요 -1 업데이트
@@ -753,16 +787,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ValueEventListener dataListener1 = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            Map<String, Object> message1 = (Map<String, Object>) dataSnapshot.getValue();
+            //Map<String, Object> message1 = (Map<String, Object>) dataSnapshot.getValue();
             //리사이클러뷰에서 몇번째 게시물: upload_num
-
-            //DB상에서 upload_num 밑의 num을 찾는다.
-            //      target_comment에 넣는다.
-            Map<String, Object> message2 = (Map<String, Object>)dataSnapshot.child(Integer.toString(upload_num)).child("comments").getValue();
-            int target_comment = Integer.parseInt(message2.get("num").toString());
-
-            //target_comment를 1 올리고,
-            target_comment++;
 
             Map<String, Object> childUpdates1 = new HashMap<>();
             Map<String, Object> postValues = new HashMap<>();
@@ -770,6 +796,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             //현재 시간을 구해서 넣는다(DB: date).
             Date time = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+            SimpleDateFormat format2 = new SimpleDateFormat("yyyy"+"MM"+"dd"+"HH"+"mm"+"ss"); //comments에 제목으로 들어감
             postValues.put("date", ""+format.format(time));
             //Log.d("datasnap", "현재 시각은 "+format.format(time)+"입니다.");
 
@@ -783,12 +810,12 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             //입력한 댓글 내용을 찾아서 넣는다(DB: text)
             postValues.put("text", ""+upload_text);
 
-            childUpdates1.put(upload_num + "/comments/" + target_comment, postValues);
-            childUpdates1.put(upload_num + "/comments/num", target_comment);
+            childUpdates1.put(upload_num + "/comments/" + format2.format(time), postValues);
+            //childUpdates1.put(upload_num + "/comments/num", target_comment);
             reference.updateChildren(childUpdates1);
 
             if(itemAddListener!=null) {
-                itemAddListener.itemAdded(commentNum, upload_pos, upload_num);
+                itemAddListener.itemAdded(lastComment_in_DB, upload_pos, upload_num);
             }
         }
 
@@ -821,6 +848,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return pref.getInt("user_num",0);
     }
 
-    //public int getFirst_DB_num() { return posts.get(0).DB_num; }
-
+    public String getFirst_DB_num() { return posts.get(0).DB_num; }
+    public String getLast_DB_num() {
+        return  posts.get(posts.size() - 1).getDB_num();
+    }
 }
