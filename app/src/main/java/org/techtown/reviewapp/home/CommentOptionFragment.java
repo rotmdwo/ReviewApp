@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.techtown.reviewapp.R;
 
@@ -21,11 +22,12 @@ public class CommentOptionFragment extends Fragment {
     CommentOptionFragment commentOptionFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
+    String DB_num;
 
-    public CommentOptionFragment() {
+    public CommentOptionFragment(String DB_num) {
         // Required empty public constructor
+        this.DB_num = DB_num;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +68,6 @@ public class CommentOptionFragment extends Fragment {
         });
 
         cancle.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 // 비활성화 되었던 네비게이션 버튼 재활성화
@@ -81,6 +82,26 @@ public class CommentOptionFragment extends Fragment {
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
                         .remove(commentOptionFragment)
+                        .commit();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootView.setBackgroundColor(Color.WHITE);
+                rootView.setBackgroundColor(Color.TRANSPARENT);
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
+                        .remove(commentOptionFragment)
+                        .commit();
+                ((HomeActivity) HomeActivity.mContext)
+                        .manager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.anim_appear_from_bottom, R.anim.anim_appear_from_bottom)
+                        .add(R.id.frameLayout,new NotionFragment(DB_num, "", true)) //게시물의 DB번호를 아직 모름ㅜㅜ
                         .commit();
             }
         });

@@ -351,7 +351,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
             ((HomeActivity) HomeActivity.mContext).
                     manager.beginTransaction().
                     setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
-                    add(R.id.frameLayout,new CommentOptionFragment()).
+                    add(R.id.frameLayout,new CommentOptionFragment(comment_num_in_DB)).
                     commit();
         } else {
             ((HomeActivity) HomeActivity.mContext).
@@ -360,6 +360,5 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     add(R.id.frameLayout,new CommentReportFragment()).
                     commit();
         }
-
     }
 }
