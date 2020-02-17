@@ -226,6 +226,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View view) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     int pos = getAdapterPosition();
+                    post_option.setImageResource(R.drawable.option_selected);
                     if(postOptionListener != null) {
                         boolean isWriter = false;
                         if(restoreState().equals(posts.get(pos).user_id)) {
