@@ -292,20 +292,27 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             // Like 버튼 이미지 바인딩
             final String DB_num = post.getDB_num();
-            /*
+
             DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
             reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
                     int like_num = Integer.parseInt(message_i.get("like").toString());
-                    Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
-                    for(int i=1; i<=like_num;i++){
-                        if(((String)message_who_liked.get(Integer.toString(i))).equals(restoreState())){
-                            liked = true;
-                            break;
+
+                    if(like_num >= 1){
+                        Map<String, Object> message_who_liked = (Map<String, Object>) message_i.get("who_liked");
+                        Set<String> keySet = message_who_liked.keySet();
+                        Iterator<String> iterator = keySet.iterator();
+                        while(iterator.hasNext()){
+                            String id = iterator.next();
+                            if(id.equals(restoreState())){
+                                liked = true;
+                                break;
+                            }
                         }
                     }
+
 
                     if(liked == false){
                         like_button.setImageResource(R.drawable.no_like);
@@ -318,7 +325,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
-             */
 
             // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
             like_button.setOnClickListener(new View.OnClickListener() {
@@ -345,11 +351,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                                 Map<String, Object> childUpdates1 = new HashMap<>();
                                 Map<String, Object> childUpdates2 = new HashMap<>();
-                                Map<String, Object> postValues = new HashMap<>();
 
                                 childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
-                                postValues.put(restoreState(),restoreState());
-                                childUpdates2.put(temp.getDB_num()+"/who_liked/", postValues);
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), restoreState());
 
                                 DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
                                 reference_upload.updateChildren(childUpdates1);
@@ -383,11 +387,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 Map<String, Object> childUpdates2 = new HashMap<>();
 
                                 childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
-                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), FieldValue.delete());  // 데이터 삭제하는 법
-
                                 DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
                                 reference_upload.updateChildren(childUpdates1);
-                                reference_upload.updateChildren(childUpdates2);
+                                reference_upload.child(temp.DB_num+"/who_liked/"+restoreState()).setValue(null);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -631,11 +633,10 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                                 Map<String, Object> childUpdates1 = new HashMap<>();
                                 Map<String, Object> childUpdates2 = new HashMap<>();
-                                Map<String, Object> postValues = new HashMap<>();
+
 
                                 childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
-                                postValues.put(restoreState(),restoreState());
-                                childUpdates2.put(temp.getDB_num()+"/who_liked/", postValues);
+                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), restoreState());
 
                                 DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
                                 reference_upload.updateChildren(childUpdates1);
@@ -667,13 +668,11 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                                 Map<String, Object> childUpdates1 = new HashMap<>();
                                 Map<String, Object> childUpdates2 = new HashMap<>();
-
                                 childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
-                                childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), FieldValue.delete());  // 데이터 삭제하는 법
 
                                 DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
                                 reference_upload.updateChildren(childUpdates1);
-                                reference_upload.updateChildren(childUpdates2);
+                                reference_upload.child(temp.DB_num+"/who_liked/"+restoreState()).setValue(null);
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
