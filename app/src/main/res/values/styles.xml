@@ -14,5 +14,9 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/point</item>
     </style>
-
+    <style name="myDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:alertDialogTheme">@style/myDialog</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 </resources>
