@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -233,8 +234,8 @@ public class StatusFragment extends Fragment {
             }
         });
 
-        Button button3 = rootView.findViewById(R.id.button3); // 사진첨부 버튼
-        button3.setOnClickListener(new View.OnClickListener() {
+        ImageView picture_add= rootView.findViewById(R.id.picture_add); // 사진첨부 버튼
+        picture_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
