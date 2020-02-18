@@ -7,6 +7,7 @@ public class Post {
     //Review, Status, 댓글의 공통적인 요소
     String user_id, user_nickname, date, user_text, DB_num;
     int type;
+    String parent_DB_num;
 
     //Review, Status 공통 요소
     String user_rank, restaurant;
@@ -112,6 +113,10 @@ public class Post {
     public void setDB_num(String DB_num) {
         this.DB_num = DB_num;
     }
+
+    public void setParent_DB_num(String DB_num) { this.parent_DB_num = DB_num; }
+
+    public String getParent_DB_num() { return this.parent_DB_num; }
 
     public void setLike(int like) {
         this.like = like;

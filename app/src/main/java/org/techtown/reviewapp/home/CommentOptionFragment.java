@@ -23,10 +23,12 @@ public class CommentOptionFragment extends Fragment {
     FrameLayout root;
     TextView cancle, report, delete, edit;
     String DB_num;
+    String post_DB_num;
 
-    public CommentOptionFragment(String DB_num) {
+    public CommentOptionFragment(String DB_num, String parent_DB_num) {
         // Required empty public constructor
         this.DB_num = DB_num;
+        this.post_DB_num = parent_DB_num;
     }
 
     @Override
@@ -101,7 +103,7 @@ public class CommentOptionFragment extends Fragment {
                         .manager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.anim_appear_from_bottom, R.anim.anim_appear_from_bottom)
-                        .add(R.id.frameLayout,new NotionFragment(DB_num, "", true)) //게시물의 DB번호를 아직 모름ㅜㅜ
+                        .add(R.id.frameLayout,new NotionFragment(DB_num, post_DB_num, true)) //게시물의 DB번호를 아직 모름ㅜㅜ
                         .commit();
             }
         });

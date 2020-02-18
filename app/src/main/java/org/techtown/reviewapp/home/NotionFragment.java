@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,10 @@ public class NotionFragment extends Fragment {
 
                 //디비 삭제하기
                 if(isComment) { //댓글임 -> DB_num, post_DB_num 필요
+                    Map<String, Object> childUpdates1 = new HashMap<>();
+                    childUpdates1.put(post_DB_num +"/comments/"+ DB_num , null);
+                    Log.d("debug", "부모: " + post_DB_num + " 댓글: " + DB_num);
+                    reference.updateChildren(childUpdates1);
 
                 } else { //post임 -> DB_num만 필요
                     Map<String, Object> childUpdates1 = new HashMap<>();

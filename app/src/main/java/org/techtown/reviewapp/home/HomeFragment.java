@@ -58,7 +58,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     ProgressBar progressBar;
     Boolean loadedAll = false;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,10 +78,6 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-
-
-
 
         reference.addValueEventListener(dataListener);
         postAdapter = new PostAdapter(getContext());
@@ -182,6 +177,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
                                 Post comment = new Post();
                                 comment.setComment(id, nickname, date, text, 2, dataSnapshot1.getKey());
+                                comment.setParent_DB_num(snapshot.getKey());
                                 postAdapter.addItem(comment);
                             }
                         }
@@ -262,6 +258,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                     postAdapter.comment_add(list_position);
                     Post comment = new Post();
                     comment.setComment(id, nickname, date, text,2, dataSnapshot1.getKey());
+                    comment.setParent_DB_num(upload_num);
                     postAdapter.addItem(comment, list_position);
                     postAdapter.notifyItemInserted(list_position);
                 }
@@ -325,11 +322,9 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
                                 review.setReview(id, nickname, date, text, 0, "레벨 " + level, restaurant, like, DB_key, photo, 1);
                                 postAdapter.addItem(review);
                             }
-                            Log.d("debug", "만든다");
                             postAdapter.notifyItemInserted(postAdapter.posts.size());
                         }
                     }
-                    Log.d("debug", ""+postAdapter.posts.size());
                     recyclerView.scrollToPosition(postAdapter.getItemCount()-1); //자동스크롤
                 }
 
@@ -383,7 +378,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     }
 
     @Override
-    public void commentTouched(String comment_num_in_DB, Boolean isWriter) {
+    public void commentTouched(String comment_num_in_DB, String parent_num_in_DB, Boolean isWriter) {
         // Status Fragment가 떴을 때 네비게이션 버튼 비활성화
         ((HomeActivity) HomeActivity.mContext).home.setEnabled(false);
         ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(false);
@@ -394,7 +389,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
             ((HomeActivity) HomeActivity.mContext).
                     manager.beginTransaction().
                     setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
-                    add(R.id.frameLayout,new CommentOptionFragment(comment_num_in_DB)).
+                    add(R.id.frameLayout,new CommentOptionFragment(comment_num_in_DB, parent_num_in_DB)).
                     commit();
         } else {
             ((HomeActivity) HomeActivity.mContext).
@@ -476,6 +471,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
 
                                     Post comment = new Post();
                                     comment.setComment(id, nickname, date, text, 2, dataSnapshot1.getKey());
+                                    comment.setParent_DB_num(snapshot.getKey());
                                     postAdapter.addItem(comment,num++);
                                     crop_num++;
                                     all_posts++;
