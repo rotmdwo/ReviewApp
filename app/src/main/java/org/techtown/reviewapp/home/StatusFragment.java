@@ -65,6 +65,8 @@ public class StatusFragment extends Fragment {
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU");
     //private DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
 
+    ImageView picture_add;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,8 +105,8 @@ public class StatusFragment extends Fragment {
             }
         });
          */
-        Button button = rootView.findViewById(R.id.button); // 취소버튼
-        button.setOnClickListener(new View.OnClickListener() {
+        TextView exit = rootView.findViewById(R.id.exit); // 취소버튼
+        exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((HomeActivity) HomeActivity.mContext).manager.beginTransaction().remove(statusFragment).commit();  // 프래그먼트 자기자신 보이지 않는 법
@@ -125,8 +127,8 @@ public class StatusFragment extends Fragment {
             }
         });
 
-        Button button2 = rootView.findViewById(R.id.button2); // 등록버튼
-        button2.setOnClickListener(new View.OnClickListener() {
+        TextView submit = rootView.findViewById(R.id.submit); // 등록버튼
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textView = rootView.findViewById(R.id.textView);
@@ -234,7 +236,7 @@ public class StatusFragment extends Fragment {
             }
         });
 
-        ImageView picture_add= rootView.findViewById(R.id.picture_add); // 사진첨부 버튼
+        picture_add= rootView.findViewById(R.id.picture_add); // 사진첨부 버튼
         picture_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +255,6 @@ public class StatusFragment extends Fragment {
 
         if(requestCode == 101){
             file = data.getData();
-
             String[] filePath = { MediaStore.Images.Media.DATA };
             Cursor cursor = ((HomeActivity)HomeActivity.mContext).getContentResolver().query(file, filePath, null, null, null);
             cursor.moveToFirst();
@@ -272,6 +273,7 @@ public class StatusFragment extends Fragment {
             int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,1);
             image = BitmapFactory.decodeFile(imagePath);
             image = rotate(image, exifOrientationToDegrees(orientation));
+            picture_add.setImageBitmap(image);
             pictureSelected = true;
 
         }
