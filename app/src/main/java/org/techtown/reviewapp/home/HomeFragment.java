@@ -378,7 +378,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
     }
 
     @Override
-    public void commentTouched(String comment_num_in_DB, String parent_num_in_DB, Boolean isWriter) {
+    public void commentTouched(int pos, String comment_num_in_DB, String parent_num_in_DB, Boolean isWriter) {
         // Status Fragment가 떴을 때 네비게이션 버튼 비활성화
         ((HomeActivity) HomeActivity.mContext).home.setEnabled(false);
         ((HomeActivity) HomeActivity.mContext).restaurant.setEnabled(false);
@@ -389,7 +389,7 @@ public class HomeFragment extends Fragment implements PostAdapter.ItemAddListene
             ((HomeActivity) HomeActivity.mContext).
                     manager.beginTransaction().
                     setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
-                    add(R.id.frameLayout,new CommentOptionFragment(comment_num_in_DB, parent_num_in_DB)).
+                    add(R.id.frameLayout,new CommentOptionFragment(pos, comment_num_in_DB, parent_num_in_DB)).
                     commit();
         } else {
             ((HomeActivity) HomeActivity.mContext).

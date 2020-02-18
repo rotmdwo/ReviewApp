@@ -29,12 +29,14 @@ public class NotionFragment extends Fragment {
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
     NotionFragment notionFragment;
     String DB_num, post_DB_num;
+    int position;
     boolean isComment;
     TextView yes, no;
 
     //Comment를 삭제하려는 경우, isComment는 true임
-    public NotionFragment(String DB_num, String post_DB_num, boolean isComment) {
+    public NotionFragment(int position, String DB_num, String post_DB_num, boolean isComment) {
         // Required empty public constructor
+        this.position = position;
         this.DB_num = DB_num;
         this.post_DB_num = post_DB_num;
         this.isComment = isComment;
@@ -86,6 +88,8 @@ public class NotionFragment extends Fragment {
                     childUpdates1.put(post_DB_num +"/comments/"+ DB_num , null);
                     Log.d("debug", "부모: " + post_DB_num + " 댓글: " + DB_num);
                     reference.updateChildren(childUpdates1);
+                    ((HomeFragment)HomeFragment.mContext).postAdapter.posts.remove(position);
+                    ((HomeFragment)HomeFragment.mContext).postAdapter.notifyItemRemoved(position);
 
                 } else { //post임 -> DB_num만 필요
                     Map<String, Object> childUpdates1 = new HashMap<>();

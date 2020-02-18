@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.home.HomeActivity;
+import org.techtown.reviewapp.home.HomeFragment;
 import org.techtown.reviewapp.home.PostOptionFragment;
 
 import java.text.SimpleDateFormat;
@@ -76,7 +77,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface PostOptionListener {
         void optionTouched(String post_num_in_DB, Boolean isWriter);
-        void commentTouched(String comment_num_in_DB, String parent_num_in_DB, Boolean isWriter);
+        void commentTouched(int pos, String comment_num_in_DB, String parent_num_in_DB, Boolean isWriter);
     }
 
     //생성자
@@ -116,7 +117,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         if(restoreState().equals(posts.get(pos).user_id)) {
                             isWriter = true;
                         }
-                        postOptionListener.commentTouched(posts.get(pos).getDB_num(), posts.get(pos).getParent_DB_num(), isWriter);
+                        postOptionListener.commentTouched(pos, posts.get(pos).getDB_num(), posts.get(pos).getParent_DB_num(), isWriter);
                     }
                     return false;
                 }
