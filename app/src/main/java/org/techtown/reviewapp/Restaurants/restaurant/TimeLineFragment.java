@@ -1,6 +1,7 @@
 package org.techtown.reviewapp.Restaurants.restaurant;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.techtown.reviewapp.R;
 import org.techtown.reviewapp.Restaurants.RestaurantActivity;
 import org.techtown.reviewapp.home.HomeFragment;
+import org.techtown.reviewapp.post.AddPostListener;
+import org.techtown.reviewapp.post.Post;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,11 +40,11 @@ public class TimeLineFragment extends Fragment {
     public static TimeLineFragment mContext;
     String restaurantName = ((RestaurantActivity)RestaurantActivity.mContext).name;
     Query query = reference.child("Review").child(restaurantName).limitToLast(10);
+    Query query2;
 
     public TimeLineFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,4 +143,80 @@ public class TimeLineFragment extends Fragment {
 
         }
     };
+
+    //포스트를 추가했을때 DB에서 정보를 가져오는 리스너
+    ValueEventListener dataListener3 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            //먼저 유저 정보를 dataSnapshot2에 담음
+            final DataSnapshot dataSnapshot2 = dataSnapshot.child("user");
+
+            query2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Long lastDBNum = Long.parseLong(reviewAdapter.getLast_DB_num());
+                    Log.d("debug", "lastDBNum: " + lastDBNum);
+                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        if(dataSnapshot1.getKey().equals("num_of_reviews")) {
+                            continue;
+                        }
+                        if(Long.parseLong(dataSnapshot1.getKey()) > lastDBNum) {
+                            String DB_key = dataSnapshot1.getKey();
+
+                            //게시물에 대한 정보: message_post
+                            //id, date, like, picture, restaurant, text, user_num
+                            Map<String, Object> message_post = (Map<String, Object>) dataSnapshot1.getValue();
+                            String id = (String) message_post.get("id");
+                            String date = (String) message_post.get("date");
+                            int like = Integer.parseInt(message_post.get("like").toString());
+                            String picture = (String) message_post.get("picture");
+                            String restaurant = (String) message_post.get("restaurant");
+                            String text = (String) message_post.get("text");
+                            String user_num = message_post.get("user_num").toString();
+                            //사진이 여러개일 때를 대비하여 ArrayList 선언
+                            ArrayList<String> photo = new ArrayList<>();
+                            photo.add(picture);
+
+                            //게시물을 작성한 유저에 대한 정보: message_user
+                            //nickname, level
+                            //현재 user_num으로 찾음
+                            //(주: 굳이 user_num으로 찾을 필요가 없음, id는 유니크하기 때문에 구조를 바꿀 필요가 있을듯)
+                            Map<String, Object> message_user = (Map<String, Object>) dataSnapshot2.child(user_num).getValue();
+                            String nickname = (String) message_user.get("nickname");
+                            int level = Integer.parseInt(message_user.get("level").toString());
+
+                            //받아온 정보를 바탕으로 새로운 Post를 만든다
+                            if (picture.equals("NO")) {
+                                Review noPhoto = new Review();
+                                noPhoto.setNoPhoto(id, nickname, date, text, 1, "레벨 " + level, like, DB_key);
+                                reviewAdapter.addItem(noPhoto);
+                            } else {
+                                Review review = new Review();
+                                review.setReview(id, nickname, date, text, 0, "레벨 " + level, like, DB_key, photo, 1);
+                                reviewAdapter.addItem(review);
+                            }
+                            reviewAdapter.notifyItemInserted(reviewAdapter.items.size());
+                        }
+                    }
+                    recyclerView.scrollToPosition(reviewAdapter.getItemCount()-1); //자동스크롤
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    public void reviewAdded() {
+        Log.d("debug", "테스트");
+        query2 = reference.child("Review").child(restaurantName).limitToLast(10);
+        reference.addListenerForSingleValueEvent(dataListener3);
+    }
 }

@@ -1,6 +1,7 @@
 package org.techtown.reviewapp.Restaurants;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -106,9 +108,17 @@ public class RestaurantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, WriteActivity.class);
-                mContext.startActivity(intent);
+                startActivityForResult(intent, 0);
                 overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_in_bottom);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == 1) {
+            timeLineFragment.reviewAdded();
+        }
     }
 }

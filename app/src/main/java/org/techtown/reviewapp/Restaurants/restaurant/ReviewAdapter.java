@@ -413,6 +413,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return items.size();
     }
 
+    public String getLast_DB_num() {
+        return items.get(items.size() - 1).getDB_num();
+    }
+
     public void addItem(Review review) {
         items.add(review);
     }
