@@ -71,6 +71,7 @@ public class TimeLineFragment extends Fragment {
             if(!reviewAdapter.items.isEmpty()) {
                 return;
             }
+
             //먼저 유저 정보를 dataSnapshot2에 담음
             final DataSnapshot dataSnapshot2 = dataSnapshot.child("user");
             //쿼리문: status에서 최근 10개 게시물을 불러옴
@@ -184,7 +185,6 @@ public class TimeLineFragment extends Fragment {
                             Map<String, Object> message_user = (Map<String, Object>) dataSnapshot2.child(user_num).getValue();
                             String nickname = (String) message_user.get("nickname");
                             int level = Integer.parseInt(message_user.get("level").toString());
-
                             //받아온 정보를 바탕으로 새로운 Post를 만든다
                             if (picture.equals("NO")) {
                                 Review noPhoto = new Review();
