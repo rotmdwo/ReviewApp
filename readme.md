@@ -34,4 +34,8 @@
 리뷰를 작성할 때 Status에도 반영하기 위해 음식점 리뷰를 작성하면 Review 노드를 업데이트 할 뿐만 아니라 <br>
 Status 노드 또한 업데이트 하여야 합니다. (총 2번) <br>
 
-<h4> https://console.firebase.google.com/project/reviewapp-80a16/database/reviewapp-80a16/data </h4> <br>
+<h4> https://console.firebase.google.com/project/reviewapp-80a16/database/reviewapp-80a16/data </h4> <br><br><br><br>
+
+<h2>음식점에 구글맵 위치등록</h2>
+https://support.google.com/maps/answer/18539?co=GENIE.Platform%3DDesktop&hl=ko&oco=1 을 참조하여, <br>
+데이터베이스의 Restaurants/location에 "위도, 경도" 형식으로 넣어주시면 됩니다.
