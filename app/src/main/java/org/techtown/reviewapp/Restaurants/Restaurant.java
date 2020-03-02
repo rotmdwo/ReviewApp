@@ -5,12 +5,14 @@ public class Restaurant implements Comparable<Restaurant>{
     String picture;
     float rating;
     int num_of_reviews;
+    String location;
 
-    public Restaurant(String name, String picture, float rating, int num_of_reviews) {
+    public Restaurant(String name, String picture, float rating, int num_of_reviews,String location) {
         this.name = name;
         this.picture = picture;
         this.rating = rating;
         this.num_of_reviews = num_of_reviews;
+        this.location=location;
     }
 
     public String getName() {
@@ -54,5 +56,13 @@ public class Restaurant implements Comparable<Restaurant>{
         } else{
             return 0;
         }
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

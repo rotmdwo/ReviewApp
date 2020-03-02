@@ -81,6 +81,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                         bundle.putString("picture", items.get(pos).getPicture());
                         bundle.putFloat("rating", items.get(pos).getRating());
                         bundle.putInt("reviewNum", items.get(pos).getNum_of_reviews());
+                        bundle.putString("location",items.get(pos).getLocation());
                         intent.putExtras(bundle);
                         context.startActivity(intent);
                     }

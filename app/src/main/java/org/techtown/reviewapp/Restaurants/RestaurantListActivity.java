@@ -101,7 +101,7 @@ public class RestaurantListActivity extends AppCompatActivity {
                 array[i] = new Restaurant(name,
                         message_Restaurants.get("picture").toString(),
                         Float.parseFloat(message_Restaurants.get("rating").toString()),
-                        Integer.parseInt(message_Restaurants.get("num_of_reviews").toString()));
+                        Integer.parseInt(message_Restaurants.get("num_of_reviews").toString()),message_Restaurants.get("location").toString());
             }
 
             Arrays.sort(array);

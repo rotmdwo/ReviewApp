@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +33,8 @@ public class RestaurantActivity extends AppCompatActivity {
     TimeLineFragment timeLineFragment;
     ImageView prev, write;
     TextView time_line, resto_info;
+    public double latitude;
+    public double longitude;
     public static Context mContext;
 
     TextView restaurant_name, star_rating;
@@ -50,6 +53,9 @@ public class RestaurantActivity extends AppCompatActivity {
         picture = bundle.getString("picture");
         rating = bundle.getFloat("rating");
         reviewNum = bundle.getInt("reviewNum");
+        String location = bundle.getString("location");
+        latitude = Double.parseDouble(location.substring(0,location.indexOf(",")));
+        longitude = Double.parseDouble(location.substring(location.indexOf(" ")+1));
 
         restaurant_name = findViewById(R.id.restaurant_name);
         star_rating = findViewById(R.id.star_rating);
