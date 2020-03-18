@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -461,6 +462,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         //Review의 요소
         ImageView user_photos;
+        int doubleClickFlag = 0;
+        final int CLICK_DELAY = 250;
 
         ReviewViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -608,6 +611,63 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
+            // 사진 더블클릭 시 좋아요 기능
+            user_photos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doubleClickFlag++;
+                    Handler handler = new Handler();
+                    Runnable clickRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            doubleClickFlag = 0;
+                            // todo 클릭 이벤트
+                        }
+                    };
+                    if( doubleClickFlag == 1 ) {
+                        handler.postDelayed( clickRunnable, CLICK_DELAY );
+                    }else if( doubleClickFlag == 2 ) {
+                        doubleClickFlag = 0;
+                        // todo 더블클릭 이벤트
+                        if(liked == false){
+                            like_button.setImageResource(R.drawable.like);
+                            Toast.makeText(context, "좋아요!", Toast.LENGTH_SHORT).show();
+                            liked = true;
+
+                            DatabaseReference reference_like = FirebaseDatabase.getInstance().getReference().child("SKKU");
+                            reference_like.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    Map<String, Object> message_i = (Map<String, Object>) dataSnapshot.child("Status").child(DB_num).getValue();
+                                    int like_num = Integer.parseInt(message_i.get("like").toString());
+
+                                    // 좋아요 +1 업데이트
+                                    Post temp = posts.get(position);
+                                    temp.setLike(like_num+1);
+                                    setItem(temp,position);
+                                    like.setText(temp.getLike()+"명이 좋아합니다.");
+
+                                    Map<String, Object> childUpdates1 = new HashMap<>();
+                                    Map<String, Object> childUpdates2 = new HashMap<>();
+
+
+                                    childUpdates1.put(temp.getDB_num()+"/like",temp.getLike());
+                                    childUpdates2.put(temp.getDB_num()+"/who_liked/"+restoreState(), restoreState());
+
+                                    DatabaseReference reference_upload = FirebaseDatabase.getInstance().getReference().child("SKKU").child("Status");
+                                    reference_upload.updateChildren(childUpdates1);
+                                    reference_upload.updateChildren(childUpdates2);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            });
 
             // Like 버튼 누를시 데이터베이스 업데이트 및 버튼 이미지 변경
             like_button.setOnClickListener(new View.OnClickListener() {
