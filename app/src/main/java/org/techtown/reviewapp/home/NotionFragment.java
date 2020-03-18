@@ -94,7 +94,9 @@ public class NotionFragment extends Fragment {
                 } else { //post임 -> DB_num만 필요
                     Map<String, Object> childUpdates1 = new HashMap<>();
                     childUpdates1.put(DB_num ,null);
-                    //reference.updateChildren(childUpdates1);
+                    reference.updateChildren(childUpdates1);
+
+                    //TODO 사진 지우는 것도 구현해야 함
                 }
             }
         });

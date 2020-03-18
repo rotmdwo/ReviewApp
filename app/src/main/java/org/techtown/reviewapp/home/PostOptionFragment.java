@@ -20,9 +20,11 @@ public class PostOptionFragment extends Fragment {
     PostOptionFragment postOptionFragment;
     FrameLayout root;
     TextView cancle, report, delete, edit;
+    String post_num_in_DB;
 
-    public PostOptionFragment() {
+    public PostOptionFragment(String post_num_in_DB) {
         // Required empty public constructor
+        this.post_num_in_DB=post_num_in_DB;
     }
 
 
@@ -81,6 +83,18 @@ public class PostOptionFragment extends Fragment {
                         .setCustomAnimations(R.anim.anim_slide_out_bottom, R.anim.anim_slide_out_bottom)
                         .remove(postOptionFragment)
                         .commit();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((HomeActivity) HomeActivity.mContext).
+                        manager.beginTransaction().
+                        setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_bottom).
+                        remove(postOptionFragment).
+                        add(R.id.frameLayout,new NotionFragment(post_num_in_DB,false)).
+                        commit();
             }
         });
 
