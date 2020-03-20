@@ -43,7 +43,7 @@ public class TimeLineFragment extends Fragment {
     Query query2;
 
     public TimeLineFragment() {
-        // Required empty public constructor
+
     }
 
     @Override

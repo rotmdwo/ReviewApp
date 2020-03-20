@@ -8,5 +8,5 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        class="com.google.android.gms.maps.SupportMapFragment"/>
+        class="org.techtown.reviewapp.Restaurants.restaurant.RestaurantMap"/>
 </FrameLayout>

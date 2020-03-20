@@ -3,6 +3,7 @@ package org.techtown.reviewapp.Restaurants;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
@@ -44,6 +45,8 @@ public class RestaurantActivity extends AppCompatActivity {
     Float rating;
     int reviewNum;
 
+    public NestedScrollView nestedScrollView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,8 @@ public class RestaurantActivity extends AppCompatActivity {
         restaurant_name = findViewById(R.id.restaurant_name);
         star_rating = findViewById(R.id.star_rating);
         restaurant_image = findViewById(R.id.restaurant_image);
+
+        nestedScrollView = findViewById(R.id.nestedScrollView);
 
         restaurant_name.setText(name);
         star_rating.setText(rating.toString());
@@ -82,7 +87,7 @@ public class RestaurantActivity extends AppCompatActivity {
         time_line = findViewById(R.id.time_line);
         resto_info = findViewById(R.id.resto_info);
 
-        infoFragment = new InfoFragment();
+        infoFragment = new InfoFragment(this);
         timeLineFragment = new TimeLineFragment();
         manager.beginTransaction()
                 .add(R.id.frameLayout, timeLineFragment)
