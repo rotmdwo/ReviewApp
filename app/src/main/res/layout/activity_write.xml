@@ -93,4 +93,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/review_text" />
 
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="85dp"
+        app:layout_constraintStart_toEndOf="@+id/picture_add"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="85dp"
+        app:layout_constraintStart_toEndOf="@+id/star1"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="85dp"
+        app:layout_constraintStart_toEndOf="@+id/star2"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="85dp"
+        app:layout_constraintStart_toEndOf="@+id/star3"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="85dp"
+        app:layout_constraintStart_toEndOf="@+id/star4"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/emptystar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

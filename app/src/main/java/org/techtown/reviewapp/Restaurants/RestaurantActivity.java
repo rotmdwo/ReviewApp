@@ -119,6 +119,9 @@ public class RestaurantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, WriteActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putFloat("rating", rating);
+                bundle.putInt("reviewNum", reviewNum);
                 startActivityForResult(intent, 0);
                 overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_in_bottom);
             }

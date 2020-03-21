@@ -66,6 +66,13 @@ public class WriteActivity extends AppCompatActivity {
     //식당
     String restaurantName = ((RestaurantActivity) RestaurantActivity.mContext).name;
 
+    //평점
+    ImageView star1, star2, star3, star4, star5;
+    Boolean isRated = false;
+    int rating = 0;
+    int reviewNum;
+    float previousRating;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +99,16 @@ public class WriteActivity extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         picture_add = findViewById(R.id.picture_add);
         exit = findViewById(R.id.exit);
+        star1 = findViewById(R.id.star1);
+        star2 = findViewById(R.id.star2);
+        star3 = findViewById(R.id.star3);
+        star4 = findViewById(R.id.star4);
+        star5 = findViewById(R.id.star5);
+
+        //기존 리뷰 수, 평점 가져옴
+        Intent intent = getIntent();
+        reviewNum = intent.getIntExtra("reviewNum",0);
+        previousRating = intent.getFloatExtra("rating",0);
 
         picture_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +126,68 @@ public class WriteActivity extends AppCompatActivity {
             }
         });
 
+        //평점주기
+        star1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRated = true;
+                rating=1;
+                star1.setImageResource(R.drawable.yellowstar);
+                star2.setImageResource(R.drawable.emptystar);
+                star3.setImageResource(R.drawable.emptystar);
+                star4.setImageResource(R.drawable.emptystar);
+                star5.setImageResource(R.drawable.emptystar);
+            }
+        });
+        star2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRated = true;
+                rating=2;
+                star1.setImageResource(R.drawable.yellowstar);
+                star2.setImageResource(R.drawable.yellowstar);
+                star3.setImageResource(R.drawable.emptystar);
+                star4.setImageResource(R.drawable.emptystar);
+                star5.setImageResource(R.drawable.emptystar);
+            }
+        });
+        star3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRated = true;
+                rating=3;
+                star1.setImageResource(R.drawable.yellowstar);
+                star2.setImageResource(R.drawable.yellowstar);
+                star3.setImageResource(R.drawable.yellowstar);
+                star4.setImageResource(R.drawable.emptystar);
+                star5.setImageResource(R.drawable.emptystar);
+            }
+        });
+        star4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRated = true;
+                rating=4;
+                star1.setImageResource(R.drawable.yellowstar);
+                star2.setImageResource(R.drawable.yellowstar);
+                star3.setImageResource(R.drawable.yellowstar);
+                star4.setImageResource(R.drawable.yellowstar);
+                star5.setImageResource(R.drawable.emptystar);
+            }
+        });
+        star5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRated = true;
+                rating=5;
+                star1.setImageResource(R.drawable.yellowstar);
+                star2.setImageResource(R.drawable.yellowstar);
+                star3.setImageResource(R.drawable.yellowstar);
+                star4.setImageResource(R.drawable.yellowstar);
+                star5.setImageResource(R.drawable.yellowstar);
+            }
+        });
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +196,10 @@ public class WriteActivity extends AppCompatActivity {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
                 SimpleDateFormat format2 = new SimpleDateFormat("yyyy"+"MM"+"dd"+"HH"+"mm"+"ss"); //status에 제목으로 들어감
                 String image_path = "SKKU/review_picture/"+format.format(date) +"_"+ restoreState();
-                if(pictureSelected == true){  // 사진 넣었을 때
+                if(isRated == false){
+                    Toast.makeText(getApplicationContext(),"평점을 선택해주세요.",Toast.LENGTH_LONG).show();
+                }
+                else if(pictureSelected == true){  // 사진 넣었을 때
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 15, bytes);
 
@@ -138,13 +220,21 @@ public class WriteActivity extends AppCompatActivity {
                     postValues.put("restaurant","NO");
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
+                    postValues.put("rating",rating);
 
                     childUpdates1.put("Review/"+ restaurantName + "/" + format2.format(date), postValues);
                     Map<String, Object> postValues2 = new HashMap<>();
                     postValues2.put("temp","temp");
                     postValues.put("who_liked", postValues2);
 
+                    Map<String, Object> childUpdates2 = new HashMap<>();
+                    Map<String, Object> childUpdates3 = new HashMap<>();
+                    childUpdates2.put("Restaurants/"+ restaurantName + "/num_of_reviews",reviewNum+1 );
+                    childUpdates3.put("Restaurants/"+ restaurantName + "/rating", (reviewNum*previousRating+rating)/(reviewNum+1));
+
                     reference.updateChildren(childUpdates1);
+                    reference.updateChildren(childUpdates2);
+                    reference.updateChildren(childUpdates3);
                     setResult(1);
                     finish();
 
@@ -162,6 +252,7 @@ public class WriteActivity extends AppCompatActivity {
                     postValues.put("restaurant","NO");
                     postValues.put("text",text);
                     postValues.put("user_num",restoreState2());
+                    postValues.put("rating",rating);
 
                     //numUpdates.put("num",status_num+1);
                     childUpdates1.put("Review/"+ restaurantName + "/" + format2.format(date), postValues);
@@ -169,7 +260,14 @@ public class WriteActivity extends AppCompatActivity {
                     postValues2.put("temp","temp");
                     postValues.put("who_liked",postValues2);
 
+                    Map<String, Object> childUpdates2 = new HashMap<>();
+                    Map<String, Object> childUpdates3 = new HashMap<>();
+                    childUpdates2.put("Restaurants/"+ restaurantName + "/num_of_reviews",reviewNum+1 );
+                    childUpdates3.put("Restaurants/"+ restaurantName + "/rating", (reviewNum*previousRating+rating)/(reviewNum+1));
+
                     reference.updateChildren(childUpdates1);
+                    reference.updateChildren(childUpdates2);
+                    reference.updateChildren(childUpdates3);
                     //reference2.updateChildren(numUpdates);
                     setResult(1);
                     finish();
